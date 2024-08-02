@@ -24,7 +24,7 @@ jobs:
         pip install -r requirements-test.txt
     - name: Run Tests
       run: |
-        cd django
+        cd agate
         mv core/local_settings.test.py core/local_settings.py
         coverage run manage.py test
         coverage report
