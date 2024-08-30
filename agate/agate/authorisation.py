@@ -2,8 +2,7 @@
 import requests
 import os
 from .caching import cache
-
-ONYX_DOMAIN = os.environ['ONYX_DOMAIN']
+from core.settings import ONYX_DOMAIN
 
 @cache(time_to_live =3600)
 def check_project_authorized(auth, project):

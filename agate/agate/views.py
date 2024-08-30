@@ -31,6 +31,7 @@ def projects(request):
     route = f"{ONYX_DOMAIN}/projects"
     headers = {"Authorization":request.headers.get("Authorization")}
     r= requests.get(route, headers=headers)
+    if (not r.status_code ==200): return HttpResponse(r, status=r.status_code)
     return HttpResponse(r)
 
 
@@ -38,6 +39,7 @@ def profile(request):
     route = f"{ONYX_DOMAIN}/accounts/profile"
     headers = {"Authorization":request.headers.get("Authorization")}
     r= requests.get(route, headers=headers)
+    if (not r.status_code ==200): return HttpResponse(r, status=r.status_code)
     return HttpResponse(r)
 
 
