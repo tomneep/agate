@@ -26,3 +26,5 @@ DATABASES = {
         },
     }
 }
+
+ONYX_DOMAIN = ''
