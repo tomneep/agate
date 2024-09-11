@@ -3,7 +3,8 @@ import time
 
 
 def cache(fn=None, time_to_live=3600):  # one hour default to clear all caches
-    if not fn: return functools.partial(cache, time_to_live=time_to_live)
+    if not fn:
+        return functools.partial(cache, time_to_live=time_to_live)
     my_cache = {"value": {}, "expires": time.time() + time_to_live}
 
     def _inner_fn(*args, **kwargs):

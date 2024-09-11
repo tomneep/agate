@@ -1,7 +1,7 @@
 from typing import Union
 from typing import Annotated
 from fastapi import FastAPI, Header, HTTPException, status
-import os;
+import os
 
 app = FastAPI()
 

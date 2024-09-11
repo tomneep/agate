@@ -1,5 +1,4 @@
 import requests
-import os
 from .caching import cache
 from core.settings import ONYX_DOMAIN
 
@@ -9,9 +8,11 @@ def check_project_authorized(auth, project):
     route = f"{ONYX_DOMAIN}/projects"
     headers = {"Authorization": auth}
     r = requests.get(route, headers=headers)
-    if (not r.status_code == 200): return False
+    if (not r.status_code == 200):
+        return False
     for a in r.json()["data"]:
-        if a["project"] == project: return True
+        if a["project"] == project:
+            return True
     return False
 
 
@@ -20,7 +21,8 @@ def find_site(auth):
     route = f"{ONYX_DOMAIN}/accounts/profile"
     headers = {"Authorization": auth}
     r = requests.get(route, headers=headers)
-    if (not r.status_code == 200): return ''
+    if (not r.status_code == 200):
+        return ''
     return r.json()["data"]["site"]
 
 
