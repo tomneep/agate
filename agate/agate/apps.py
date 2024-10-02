@@ -8,4 +8,5 @@ class AgateConfig(AppConfig):
     def ready(self):
         """ Import our scheduled tasks module, which will register the tasks with the scheduler """
         if 'migrate' not in sys.argv:
-            from . import scheduled_tasks
+            from .scheduled_tasks import start_scheduler
+            start_scheduler()

@@ -1,8 +1,7 @@
 FROM python:3.9-slim-bookworm
 
 RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install git -y
+    apt-get upgrade -y
 
 COPY requirements.txt /requirements.txt
 COPY requirements-test.txt /requirements-test.txt
