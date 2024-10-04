@@ -2,7 +2,10 @@ import functools
 import time
 
 
-def cache(fn=None, time_to_live=3600):  # one hour default to clear all caches
+def cache(fn=None, time_to_live=3600):  
+    """
+    Decorator to allow caching of a return value for a given time
+    """
     if not fn:
         return functools.partial(cache, time_to_live=time_to_live)
     my_cache = {"value": {}, "expires": time.time() + time_to_live}

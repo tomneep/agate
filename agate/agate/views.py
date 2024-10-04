@@ -1,8 +1,3 @@
-# This app only includes basic TemplateView generic views.
-# These are included in urls.py, within the urlpatterns array.
-# This is why this views.py file is empty.
-
-
 from django.core import serializers
 from django.http import JsonResponse, HttpResponse
 from rest_framework import status
