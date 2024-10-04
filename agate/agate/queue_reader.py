@@ -66,7 +66,21 @@ class QueueReader:
                     raise
         logger.info("checking")
 
-    def _update_item_from_message(self, message: str, stage: str):
+    def _status(self, data: dict, stage: str):
+        match stage:
+            case '"s3"':
+                return IngestionAttempt.Status.UNSTARTED
+            case 'matched':
+                return IngestionAttempt.Status.METADATA
+            case 'to_validate':
+                return IngestionAttempt.Status.VALIDATION
+            case 'inbound_results':
+                # checks for failures here
+                return IngestionAttempt.Status.SUCCESS
+            case _:
+                return IngestionAttempt.Status.UNSTARTED
+
+    def _update_item_from_message(self, message, stage: str):
         try:
             data = json.loads(message.body)
         except json.decoder.JSONDecodeError:
@@ -77,8 +91,7 @@ class QueueReader:
         except KeyError:
             logger.fatal("no uuid")
             return
-        status = 'SU'
-        data["status"] = status
+        data["status"] = self._status(data, stage)
         return self._update_item(uuid, data)
 
     def _update_item(self, uuid: str, data: dict):
@@ -93,7 +106,7 @@ class QueueReader:
         else:
             logger.fatal(f"invalid ingestion attempt message: {form.errors}")
 
-    def _update_lists(self, message: str):
+    def _update_lists(self, message):
         try:
             data = json.loads(message.body)
             project: str = data["project"]
