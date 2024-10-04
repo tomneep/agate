@@ -17,12 +17,21 @@ class IngestionAttempt(models.Model):
         default='',
     )
 
+    name = models.CharField(
+        null=True,
+        blank=True,
+        max_length=200,
+        default='',
+    )
+
     project = models.CharField(
         max_length=200,
         default='',
     )
 
     platform = models.CharField(
+        null=True,
+        blank=True,
         max_length=200,
         default='',
     )
@@ -60,7 +69,7 @@ class IngestionAttempt(models.Model):
     error_message = models.CharField(
         null=True,
         blank=True,
-        max_length=200,
+        max_length=600,
         default='',
     )
 
