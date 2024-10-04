@@ -2,7 +2,7 @@ import functools
 import time
 
 
-def cache(fn=None, time_to_live=3600):  
+def cache(fn=None, time_to_live=3600):
     """
     Decorator to allow caching of a return value for a given time
     """
