@@ -8,6 +8,5 @@ urlpatterns = [
     path("ingestion/<str:project>/", views.ingestion_attempt_response),
     path("profile/", views.profile),
     path("projects/", views.projects),
-    path("add/", views.create_ingestion_attempt),
     path("update/", views.update_ingestion_attempt),
 ]

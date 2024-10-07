@@ -1,8 +1,8 @@
-# Agate - climb TRE ingestion monitoring system
+# Agate - CLIMB-TRE ingestion monitoring system
 
 Agate is a system to monitor and report on the status of attempts to ingest date into climb TRE.
 
-Note that this works entirly in terms of ingestion *atempts* and 2 different attempts to ingest the same datafile are totally independent.
+Note that this works entirely in terms of ingestion *attempts* and 2 different attempts to ingest the same datafile are totally independent.
 
 In includes a database of ingestion attempts, recoding their UUIDs, each attached to a site and project.
 
@@ -26,7 +26,7 @@ It is expected there will only need to be a single superuser who can intervene i
 
 Each attempt to inject is identified by a unique id given to it by ROZ. 
 
-It is tied to a single project and a single site. These determine who is authorised to see and change the database item.
+It is tied to a single project and a single site. These determine who is authorized to see and change the database item.
 
 It has a status to identify which stage of the ingestion process it has reached.
 
@@ -38,8 +38,8 @@ Other options include a user-facing name, a platform, any error messages, and ot
 
 ### Authorisation
 
-This api does not include any direct users or authorisation, instead tokens sent to agate are passed onto onyx, whose status codes tell us if the
-user is authorised to see the records related to a site and project.
+This api does not include any direct users or authorization, instead tokens sent to agate are passed onto onyx, whose status codes tell us if the
+user is authorized to see the records related to a site and project.
 
 ### Population from Queues
 

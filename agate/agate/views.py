@@ -23,46 +23,28 @@ def projects(request):
     route = f"{ONYX_DOMAIN}/projects"
     headers = {"Authorization": request.headers.get("Authorization")}
     r = requests.get(route, headers=headers)
-    if (not r.status_code == 200):
-        return HttpResponse(r, status=r.status_code)
-    return HttpResponse(r)
+    return HttpResponse(r, status=r.status_code)
 
 
 def profile(request):
     route = f"{ONYX_DOMAIN}/accounts/profile"
     headers = {"Authorization": request.headers.get("Authorization")}
     r = requests.get(route, headers=headers)
-    if (not r.status_code == 200):
-        return HttpResponse(r, status=r.status_code)
-    return HttpResponse(r)
-
-
-@csrf_exempt
-def create_ingestion_attempt(request):
-    if request.method == 'POST':
-        form = IngestionAttemptForm(request.POST)
-        if form.is_valid():
-            if (not check_authorized(request, form.instance.site, form.instance.project)):
-                return HttpResponse('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
-            # create a new `IngestionAttempt` and save it to the db
-            ingestion = form.save()
-            return HttpResponse(ingestion.uuid, status=status.HTTP_201_CREATED)
-        else:
-            return HttpResponse(form.errors, status=status.HTTP_400_BAD_REQUEST)
+    return HttpResponse(r, status=r.status_code)
 
 
 @csrf_exempt
 def update_ingestion_attempt(request):
-    if request.method == 'POST':
+    if request.method == 'PUT':
         auth = request.headers.get("Authorization")
         try:
-            instance = IngestionAttempt.objects.get(uuid=request.POST['uuid'])
+            instance = IngestionAttempt.objects.get(uuid=request.PUT['uuid'])
             if (not check_authorized(auth, instance.site, instance.project)):
                 return HttpResponse('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
-            form = IngestionAttemptForm(request.POST, instance=instance)
+            form = IngestionAttemptForm(request.PUT, instance=instance)
         except IngestionAttempt.DoesNotExist:
             # IngestionAttempt doesn't exists, so we create a new one
-            form = IngestionAttemptForm(request.POST)
+            form = IngestionAttemptForm(request.PUT)
         if form.is_valid():
             if (not check_authorized(auth, form.instance.site, form.instance.project)):
                 return HttpResponse('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
