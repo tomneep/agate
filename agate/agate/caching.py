@@ -1,22 +1,20 @@
-import functools
-import time
+from django.db import models
 
 
-def cache(fn=None, time_to_live=3600):
-    """
-    Decorator to allow caching of a return value for a given time
-    """
-    if not fn:
-        return functools.partial(cache, time_to_live=time_to_live)
-    my_cache = {"value": {}, "expires": time.time() + time_to_live}
+class TokenCache(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
 
-    def _inner_fn(*args, **kwargs):
-        key = tuple(args) + tuple(kwargs)
-        if (time.time() > my_cache["expires"]):
-            my_cache["value"] = {}
-            my_cache["expires"] = time.time() + time_to_live
-        if key not in my_cache["value"]:
-            my_cache["value"][key] = fn(*args, **kwargs)
-        return my_cache["value"][key]
+    token_hash = models.CharField(
+        max_length=200,
+    )
 
-    return _inner_fn
+    site_output = models.CharField(
+        max_length=100,
+    )
+
+    projects_output = models.CharField(
+        max_length=500,
+    )
+
+
+
