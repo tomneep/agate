@@ -15,6 +15,3 @@ class TokenCache(models.Model):
     projects_output = models.CharField(
         max_length=500,
     )
-
-
-
