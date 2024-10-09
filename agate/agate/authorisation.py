@@ -4,6 +4,7 @@ from core.settings import ONYX_DOMAIN
 from datetime import timedelta
 from django.utils import timezone
 import json
+import hashlib
 
 
 def check_project_authorized(auth, project):
@@ -45,7 +46,7 @@ def _get_item(auth):
 
     time_one_hour_ago = timezone.now() - timedelta(hours=1)
     try:
-        item = TokenCache.objects.get(token_hash=hash(auth))
+        item = TokenCache.objects.get(token_hash=hashlib.sha256(auth.encode("utf-8")).hexdigest())
         if item.created_at < time_one_hour_ago:
             item.delete()
         else:
@@ -73,6 +74,6 @@ def _populate_entry(auth):
     else:
         site = r.json()["data"]["site"]
 
-    item = TokenCache(token_hash=hash(auth), projects_output=projects, site_output=site)
+    item = TokenCache(token_hash=hashlib.sha256(auth.encode("utf-8")).hexdigest(), projects_output=projects, site_output=site)
     item.save()
     return item
