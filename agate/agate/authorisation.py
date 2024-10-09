@@ -61,7 +61,7 @@ def _populate_entry(auth):
     headers = {"Authorization": auth}
     r = requests.get(route, headers=headers)
     if (not r.status_code == 200):
-        projects = []
+        projects = ''
     else:
         projects = r.text
 
