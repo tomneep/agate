@@ -10,7 +10,8 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Create a SECRET_KEY.
-# Online tools can help generate this for you, e.g. https://www.miniwebtool.com/django-secret-key-generator/
+# from django.core.management.utils import get_random_secret_key
+# get_random_secret_key()
 SECRET_KEY = ''
 
 # Set to True if in development, or False is in production

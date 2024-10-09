@@ -14,6 +14,11 @@ class IngestionAttempt(models.Model):
         primary_key=True,
         unique=True,
         max_length=200,
+    )
+
+    name = models.CharField(
+        blank=True,
+        max_length=200,
         default='',
     )
 
@@ -23,6 +28,7 @@ class IngestionAttempt(models.Model):
     )
 
     platform = models.CharField(
+        blank=True,
         max_length=200,
         default='',
     )
@@ -33,14 +39,12 @@ class IngestionAttempt(models.Model):
     )
 
     run_index = models.CharField(
-        null=True,
         blank=True,
         max_length=200,
         default='',
     )
 
     run_id = models.CharField(
-        null=True,
         blank=True,
         max_length=200,
         default='',
@@ -51,16 +55,14 @@ class IngestionAttempt(models.Model):
     is_test_attempt = models.BooleanField()
 
     climb_id = models.CharField(
-        null=True,
         blank=True,
         max_length=200,
         default='',
     )
 
     error_message = models.CharField(
-        null=True,
         blank=True,
-        max_length=200,
+        max_length=600,
         default='',
     )
 
@@ -73,3 +75,5 @@ class IngestionAttempt(models.Model):
     archived = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
+
+    updated_at = models.DateTimeField(auto_now=True)
