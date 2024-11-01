@@ -1,7 +1,7 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 import logging
 import os
-from .queue_reading.reader import QueueReader
+from .queue_reading.queue_reader import QueueReader
 from varys import Varys
 from datetime import timedelta
 from django.utils import timezone
