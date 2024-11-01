@@ -9,10 +9,21 @@ logger = logging.getLogger(__name__)
 
 
 class QueueReader:
+    """
+    Class to read the rabbitMQ queues, find any new messages.
+    It monitors 3 queue families, inbound-matched, inbound-to_validate-{project} and inbound-results-{project}-{site}
+
+    It learns about new projects and sites by monitoring the inbound-matched queue.
+
+    It delegates the actual interpretation of the message to the IngestionUpdater class
+    """
 
     def update(self, varys_client: Varys) -> None:
+        """
+        This method reads the queues for new messages and interprets the information
+        """
 
-        self._receive(varys_client, exchange="inbound-s3", update_lists=False, exchange_key="inbound-s3")
+        # self._receive(varys_client, exchange="inbound-s3", update_lists=False, exchange_key="inbound-s3")
 
         self._receive(varys_client, exchange="inbound-matched", update_lists=True, exchange_key="inbound-matched")
 
@@ -44,6 +55,11 @@ class QueueReader:
                 raise
 
     def _update_item_from_message(self, message, stage: str):
+        """
+        Interprets the message body as a dictionary
+        Delegates interpretation of the dictionary
+        """
+
         try:
             data = json.loads(message.body)
         except json.decoder.JSONDecodeError:
@@ -52,6 +68,10 @@ class QueueReader:
         IngestionUpdater.update(data, stage)
 
     def _update_lists(self, message):
+        """
+        This updates the records of projects and sites to monitor
+        If the message refers to projects or sites we don't yet know about, then we add them
+        """
         try:
             data = json.loads(message.body)
             project: str = data["project"]
