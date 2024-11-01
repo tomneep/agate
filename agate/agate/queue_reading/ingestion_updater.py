@@ -16,7 +16,7 @@ class IngestionUpdater:
             return
         cls._manipulate_data(data, stage)
         cls._update_item(uuid, data)
-        
+
     @classmethod
     def _manipulate_data(cls, data: dict, stage: str):
         data["status"] = cls._status(data, stage)

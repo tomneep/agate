@@ -121,7 +121,7 @@ inbound_results_example = """{
   "platform": "illumina",
   "files": {
     ".1.fastq.gz": {
-      "uri": 
+      "uri":
       "s3://synthscape-synthscape.ukhsa-illumina-test/synthscape.0.92274db4-3535-47db-b6f6-151354597142.1.fastq.gz",
       "etag": "f667f435136e91b986254d735cee1c13",
       "key": "synthscape.0.92274db4-3535-47db-b6f6-151354597142.1.fastq.gz",
@@ -136,7 +136,7 @@ inbound_results_example = """{
       }
     },
     ".2.fastq.gz": {
-      "uri": 
+      "uri":
       "s3://synthscape-synthscape.ukhsa-illumina-test/synthscape.0.92274db4-3535-47db-b6f6-151354597142.2.fastq.gz",
       "etag": "de2fed484dcad68d50ec6673df6b3670",
       "key": "synthscape.0.92274db4-3535-47db-b6f6-151354597142.2.fastq.gz",
