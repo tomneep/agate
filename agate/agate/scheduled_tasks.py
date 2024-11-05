@@ -34,7 +34,7 @@ def clear_old_tokens_task():
     """
     Task which will delete TokenCache objects if they were created more than 2 hours ago.
     """
-    logging.critical("token clear task")
+    logging.debug("token clear task")
     TokenCache.objects.filter(created_at__lte=timezone.now()-timedelta(hours=2)).delete()
 
 
@@ -44,7 +44,7 @@ def clear_old_archived_ingest_attempts_task():
     + they have been archived and unmodified for a day
     + they have been unmodified for 28 days
     """
-    logging.critical("ingestion clear task")
+    logging.debug("ingestion clear task")
     IngestionAttempt.objects.filter(archived=True,  updated_at__lte=timezone.now()-timedelta(days=1)).delete()
     IngestionAttempt.objects.filter(updated_at__lte=timezone.now()-timedelta(days=28)).delete()
 

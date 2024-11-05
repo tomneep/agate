@@ -63,7 +63,7 @@ class QueueReader:
         try:
             data = json.loads(message.body)
         except json.decoder.JSONDecodeError:
-            logger.fatal(f"{stage}: not a valid json message: {message.body}")
+            logger.critical(f"{stage}: not a valid json message: {message.body}")
             return
         IngestionUpdater.update(data, stage)
 

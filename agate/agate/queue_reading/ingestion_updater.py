@@ -19,7 +19,7 @@ class IngestionUpdater:
         try:
             uuid = data["uuid"]
         except KeyError:
-            logger.fatal("no uuid")
+            logger.critical("no uuid")
             return
         cls._manipulate_data(data, stage)
         cls._update_item(uuid, data)
@@ -56,7 +56,7 @@ class IngestionUpdater:
         if form.is_valid():
             form.save()
         else:
-            logger.fatal(f"invalid ingestion attempt message: {form.errors}")
+            logger.critical(f"invalid ingestion attempt message: {form.errors}")
 
     @classmethod
     def _status(cls, data: dict, stage: str):
