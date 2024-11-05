@@ -16,11 +16,8 @@ class IngestionUpdater:
         """
         Use a dictionary to update items in the database
         """
-        try:
-            uuid = data["uuid"]
-        except KeyError:
-            logger.critical("no uuid")
-            return
+        uuid = data["uuid"]
+
         cls._manipulate_data(data, stage)
         cls._update_item(uuid, data)
 

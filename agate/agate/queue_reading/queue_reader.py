@@ -65,7 +65,12 @@ class QueueReader:
         except json.decoder.JSONDecodeError:
             logger.critical(f"{stage}: not a valid json message: {message.body}")
             return
-        IngestionUpdater.update(data, stage)
+        
+        if "uuid" in data:
+            # This message prompts updates to an injection attempt
+            IngestionUpdater.update(data, stage)
+        else:
+            logger.warning(f"{stage}: message did not refer to a uuid: {message.body}")
 
     def _update_lists(self, message):
         """
