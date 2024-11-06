@@ -65,7 +65,7 @@ class QueueReader:
         except json.decoder.JSONDecodeError:
             logger.critical(f"{stage}: not a valid json message: {message.body}")
             return
-        
+
         if "uuid" in data:
             # This message prompts updates to an injection attempt
             IngestionUpdater.update(data, stage)
@@ -84,5 +84,7 @@ class QueueReader:
             project_site: str = f"{project}-{site}"
             Project.objects.get_or_create(key=project)
             ProjectSite.objects.get_or_create(key=project_site)
-        except Exception:
+        except Exception as ex:
+            logger.warning(f"Error during site/project update: {ex}")
+            # non-crucial, proceed with the exiting sites/projects
             pass
