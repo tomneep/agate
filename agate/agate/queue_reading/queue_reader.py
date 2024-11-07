@@ -49,10 +49,8 @@ class QueueReader:
                 self._update_item_from_message(m, exchange_key)
                 if update_lists:
                     self._update_lists(m)
+            finally:
                 varys_client.acknowledge_message(m)
-            except Exception:
-                varys_client.nack_message(m)
-                raise
 
     def _update_item_from_message(self, message, stage: str):
         """
