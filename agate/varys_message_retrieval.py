@@ -5,21 +5,21 @@ from varys import Varys
 
 class VarysMessageRetrieval(iMessageRetrieval):
 
-    def VarysMessageRetrieval(self,
-                              config_path: str = "varys_config.cfg",
-                              profile: str = "test",
-                              logfile: str = "varys.log",
-                              log_level: str = "DEBUG",
-                              auto_acknowledge: bool = False):
+    def __init__(self,
+                 config_path: str = "varys_config.cfg",
+                 profile: str = "test",
+                 logfile: str = "varys.log",
+                 log_level: str = "DEBUG",
+                 auto_acknowledge: bool = False):
 
         open(logfile, 'w').close()
 
         self._varys = Varys(
-            config_path,
-            profile,
-            logfile,
-            log_level,
-            auto_acknowledge,
+            config_path=config_path,
+            profile=profile,
+            logfile=logfile,
+            log_level=log_level,
+            auto_acknowledge=auto_acknowledge,
         )
 
     def receive_batch(self, exchange: str, queue_suffix: str, timeout: float) -> List[Any]:
