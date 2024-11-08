@@ -5,10 +5,13 @@ services:
       - ./agate:/agate
     working_dir: /agate
     links:
+      - rabbitmq_service
       - db_service
       - phonyx_service
     depends_on:
       db_service:
+        condition: service_healthy
+      rabbitmq_service:
         condition: service_healthy
       
     environment:
@@ -41,6 +44,24 @@ services:
     ports:
       - 8002:80
 
+  rabbitmq_service:
+    image: rabbitmq:3-management-alpine
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+        - 5672:5672
+        - 15672:15672
+    volumes:
+        - rabbitmq_service_data:/var/lib/rabbitmq/
+        - rabbitmq_service_log:/var/log/rabbitmq
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "localhost", "5672" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+
   db_service:
     image: postgres:13-alpine
     user: postgres
@@ -57,4 +78,6 @@ services:
       retries: 5
 
 volumes:
+  rabbitmq_service_data:
+  rabbitmq_service_log:
   db_service_data:

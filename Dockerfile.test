@@ -12,3 +12,13 @@ RUN pip install --upgrade pip && \
     pip install -r requirements-test.txt
 
 RUN rm /requirements*
+
+COPY agate /agate
+
+RUN cd agate && \
+    mv core/local_settings.test.py core/local_settings.py && \
+    python manage.py makemigrations 
+
+WORKDIR /agate
+
+CMD [ "python", "manage.py", "test" ]
