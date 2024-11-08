@@ -3,6 +3,9 @@ from agate.i_message_retrieval import iMessageRetrieval
 
 
 class EmptyMessageRetrieval(iMessageRetrieval):
+    """
+    A dummy message retriever which never receives any messages
+    """
 
     def receive_batch(self, exchange: str, queue_suffix: str, timeout: float) -> List[Any]:
         return []

@@ -4,10 +4,13 @@ from varys import Varys
 
 
 class VarysMessageRetrieval(iMessageRetrieval):
+    """
+    A message retriever based on the Varys-RabbitMQ workflow
+    """
 
     def __init__(self,
-                 config_path: str = "varys_config.cfg",
-                 profile: str = "test",
+                 config_path: str,
+                 profile: str,
                  logfile: str = "varys.log",
                  log_level: str = "DEBUG",
                  auto_acknowledge: bool = False):
