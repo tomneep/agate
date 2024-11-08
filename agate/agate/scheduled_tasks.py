@@ -2,32 +2,22 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import logging
 import os
 from .queue_reading.queue_reader import QueueReader
-from varys import Varys
 from datetime import timedelta
 from django.utils import timezone
 from .caching import TokenCache
 from .models import IngestionAttempt
+from core.settings import MESSAGE_RETRIEVAL
 
 _scheduler = BackgroundScheduler()
 
 _queue_reader = QueueReader()
-
-open('varys_test.log', 'w').close()
-
-_varys_client = Varys(
-    config_path="varys_config.cfg",
-    profile="test",
-    logfile="varys_test.log",
-    log_level="DEBUG",
-    auto_acknowledge=False,
-)
 
 
 def queue_retrieve_task():
     """
     Task to read the queues and update ingestion attempts accordingly
     """
-    _queue_reader.update(_varys_client)
+    _queue_reader.update(MESSAGE_RETRIEVAL)
 
 
 def clear_old_tokens_task():

@@ -2,15 +2,18 @@ from .tracking_models import Project, ProjectSite
 import json
 import logging
 from agate.queue_reading.ingestion_updater import IngestionUpdater
-
-from varys import Varys
+from agate.i_message_retrieval import iMessageRetrieval
 
 logger = logging.getLogger(__name__)
 
 
 class QueueReader:
     """
-    Class to read the rabbitMQ queues, find any new messages.
+    Class to retrieve appropriate messages from the rabbitMQ queues.
+
+    The queue interactions are delegated to an injected service.
+    This class is responsible for reading the correctly named queues.
+
     It monitors 3 queue families, inbound-matched, inbound-to_validate-{project} and inbound-results-{project}-{site}
 
     It learns about new projects and sites by monitoring the inbound-matched queue.
@@ -18,31 +21,31 @@ class QueueReader:
     It delegates the actual interpretation of the message to the IngestionUpdater class
     """
 
-    def update(self, varys_client: Varys) -> None:
+    def update(self, message_retrieval: iMessageRetrieval) -> None:
         """
         This method reads the queues for new messages and interprets the information
         """
 
-        # self._receive(varys_client, exchange="inbound-s3", update_lists=False, exchange_key="inbound-s3")
+        # self._receive(message_retrieval, exchange="inbound-s3", update_lists=False, exchange_key="inbound-s3")
 
-        self._receive(varys_client, exchange="inbound-matched", update_lists=True, exchange_key="inbound-matched")
+        self._receive(message_retrieval, exchange="inbound-matched", update_lists=True, exchange_key="inbound-matched")
 
         for project in Project.objects.all():
             self._receive(
-                varys_client,
+                message_retrieval,
                 exchange=f"inbound-to_validate-{project.key}",
                 update_lists=False,
                 exchange_key="inbound-to-validate")
 
         for project_site in ProjectSite.objects.all():
             self._receive(
-                varys_client,
+                message_retrieval,
                 exchange=f"inbound-results-{project_site.key}",
                 update_lists=False,
                 exchange_key="inbound-results")
 
-    def _receive(self, varys_client: Varys, exchange: str, update_lists: bool, exchange_key: str):
-        messages = varys_client.receive_batch(exchange=exchange, queue_suffix="agate", timeout=1)
+    def _receive(self, message_retrieval: iMessageRetrieval, exchange: str, update_lists: bool, exchange_key: str):
+        messages = message_retrieval.receive_batch(exchange=exchange, queue_suffix="agate", timeout=1)
 
         for m in messages:
             try:
@@ -50,7 +53,7 @@ class QueueReader:
                 if update_lists:
                     self._update_lists(m)
             finally:
-                varys_client.acknowledge_message(m)
+                message_retrieval.acknowledge_message(m)
 
     def _update_item_from_message(self, message, stage: str):
         """

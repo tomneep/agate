@@ -6,6 +6,7 @@ REMEMBER: If modfiying the content of this file, reflect the changes in local_se
 """
 
 import os
+from varys_message_retrieval import VarysMessageRetrieval
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -35,3 +36,10 @@ DATABASES = {
 }
 
 ONYX_DOMAIN = ''
+
+MESSAGE_RETRIEVAL = VarysMessageRetrieval(
+                              config_path="varys_config.cfg",
+                              profile="test",
+                              logfile="varys.log",
+                              log_level="DEBUG",
+                              auto_acknowledge=False)
