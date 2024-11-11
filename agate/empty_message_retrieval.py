@@ -7,7 +7,7 @@ class EmptyMessageRetrieval(iMessageRetrieval):
     A dummy message retriever which never receives any messages
     """
 
-    def receive_batch(self, exchange: str, queue_suffix: str, timeout: float) -> List[Any]:
+    def receive_batch(self, exchange: str) -> List[Any]:
         return []
 
     def acknowledge_message(self, message: Any) -> None:

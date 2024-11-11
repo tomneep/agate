@@ -45,7 +45,7 @@ class QueueReader:
                 exchange_key="inbound-results")
 
     def _receive(self, message_retrieval: iMessageRetrieval, exchange: str, update_lists: bool, exchange_key: str):
-        messages = message_retrieval.receive_batch(exchange=exchange, queue_suffix="agate", timeout=1)
+        messages = message_retrieval.receive_batch(exchange=exchange)
 
         for m in messages:
             try:

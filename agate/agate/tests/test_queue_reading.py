@@ -76,7 +76,7 @@ class QueueReadingTestCase(TestCase):
         q = QueueReader()
         q.update(retrieval)
 
-        retrieval.receive_batch.assert_any_call(exchange="inbound-matched", queue_suffix="agate", timeout=1)
+        retrieval.receive_batch.assert_any_call(exchange="inbound-matched")
 
     def test_inbound_matched_project_and_site_updates(self):
 
@@ -89,7 +89,7 @@ class QueueReadingTestCase(TestCase):
 
         retrieval = iMessageRetrieval()
 
-        def side_effect_func(exchange, queue_suffix, timeout):
+        def side_effect_func(exchange):
             if exchange == "inbound-matched":
                 return [message]
             else:
@@ -100,7 +100,7 @@ class QueueReadingTestCase(TestCase):
         q = QueueReader()
         q.update(retrieval)
 
-        retrieval.receive_batch.assert_any_call(exchange="inbound-matched", queue_suffix="agate", timeout=1)
+        retrieval.receive_batch.assert_any_call(exchange="inbound-matched")
         retrieval.acknowledge_message.assert_any_call(message)
 
         self.assertEqual(IngestionAttempt.objects.count(), 1)
@@ -110,9 +110,9 @@ class QueueReadingTestCase(TestCase):
         ProjectSite.objects.get(key="synthscape-bham")
 
         retrieval.receive_batch.assert_any_call(
-            exchange="inbound-to_validate-synthscape", queue_suffix="agate", timeout=1)
+            exchange="inbound-to_validate-synthscape")
         retrieval.receive_batch.assert_any_call(
-            exchange="inbound-results-synthscape-bham", queue_suffix="agate", timeout=1)
+            exchange="inbound-results-synthscape-bham")
 
     def test_inbound_matched_injestion_attempt(self):
 
@@ -123,7 +123,7 @@ class QueueReadingTestCase(TestCase):
 
         retrieval = iMessageRetrieval()
 
-        def side_effect_func(exchange, queue_suffix, timeout):
+        def side_effect_func(exchange):
             if exchange == "inbound-matched":
                 return [message]
             else:
@@ -134,7 +134,7 @@ class QueueReadingTestCase(TestCase):
         q = QueueReader()
         q.update(retrieval)
 
-        retrieval.receive_batch.assert_any_call(exchange="inbound-matched", queue_suffix="agate", timeout=1)
+        retrieval.receive_batch.assert_any_call(exchange="inbound-matched")
         retrieval.acknowledge_message.assert_any_call(message)
 
         self.assertEqual(IngestionAttempt.objects.count(), 1)

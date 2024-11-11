@@ -8,7 +8,7 @@ class iMessageRetrieval:
     It is left as an interface within agate, in order to reduce explicit dependence on Varys.
     """
 
-    def receive_batch(self, exchange: str, queue_suffix: str, timeout: float) -> List[Any]:
+    def receive_batch(self, exchange: str) -> List[Any]:
         """
         Method to retrieve one or more messages from the provider
         """

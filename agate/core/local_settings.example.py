@@ -38,6 +38,8 @@ DATABASES = {
 ONYX_DOMAIN = ''
 
 MESSAGE_RETRIEVAL = VarysMessageRetrieval(
+                              queue_suffix="agate",
+                              timeout=1,
                               config_path="varys_config.cfg",
                               profile="test",
                               logfile="varys.log",
