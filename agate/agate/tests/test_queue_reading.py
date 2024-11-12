@@ -73,8 +73,8 @@ class QueueReadingTestCase(TestCase):
         retrieval = iMessageRetrieval()
         retrieval.receive_batch = Mock(return_value=[])
 
-        q = QueueReader()
-        q.update(retrieval)
+        q = QueueReader(retrieval)
+        q.update()
 
         retrieval.receive_batch.assert_any_call(exchange="inbound-matched")
 
@@ -97,8 +97,8 @@ class QueueReadingTestCase(TestCase):
         retrieval.receive_batch = Mock(side_effect=side_effect_func)
         retrieval.acknowledge_message = Mock()
 
-        q = QueueReader()
-        q.update(retrieval)
+        q = QueueReader(retrieval)
+        q.update()
 
         retrieval.receive_batch.assert_any_call(exchange="inbound-matched")
         retrieval.acknowledge_message.assert_any_call(message)
@@ -131,8 +131,8 @@ class QueueReadingTestCase(TestCase):
         retrieval.receive_batch = Mock(side_effect=side_effect_func)
         retrieval.acknowledge_message = Mock()
 
-        q = QueueReader()
-        q.update(retrieval)
+        q = QueueReader(retrieval)
+        q.update()
 
         retrieval.receive_batch.assert_any_call(exchange="inbound-matched")
         retrieval.acknowledge_message.assert_any_call(message)

@@ -20,32 +20,32 @@ class QueueReader:
 
     It delegates the actual interpretation of the message to the IngestionUpdater class
     """
+    def __init__(self, message_retrieval: iMessageRetrieval):
+        self._message_retrieval = message_retrieval
 
-    def update(self, message_retrieval: iMessageRetrieval) -> None:
+    def update(self) -> None:
         """
         This method reads the queues for new messages and interprets the information
         """
 
         # self._receive(message_retrieval, exchange="inbound-s3", update_lists=False, exchange_key="inbound-s3")
 
-        self._receive(message_retrieval, exchange="inbound-matched", update_lists=True, exchange_key="inbound-matched")
+        self._receive(exchange="inbound-matched", update_lists=True, exchange_key="inbound-matched")
 
         for project in Project.objects.all():
             self._receive(
-                message_retrieval,
                 exchange=f"inbound-to_validate-{project.key}",
                 update_lists=False,
                 exchange_key="inbound-to-validate")
 
         for project_site in ProjectSite.objects.all():
             self._receive(
-                message_retrieval,
                 exchange=f"inbound-results-{project_site.key}",
                 update_lists=False,
                 exchange_key="inbound-results")
 
-    def _receive(self, message_retrieval: iMessageRetrieval, exchange: str, update_lists: bool, exchange_key: str):
-        messages = message_retrieval.receive_batch(exchange=exchange)
+    def _receive(self, exchange: str, update_lists: bool, exchange_key: str):
+        messages = self._message_retrieval.receive_batch(exchange=exchange)
 
         for m in messages:
             try:
@@ -53,7 +53,7 @@ class QueueReader:
                 if update_lists:
                     self._update_lists(m)
             finally:
-                message_retrieval.acknowledge_message(m)
+                self._message_retrieval.acknowledge_message(m)
 
     def _update_item_from_message(self, message, stage: str):
         """

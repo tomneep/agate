@@ -4,7 +4,7 @@ from typing import Any, List
 class iMessageRetrieval:
     """
     This is the interface for the retrieval and acknowledgement of messages.
-    The Varys client is an example of a class which conforms to such an interface.
+    The VarysRetrieval is an example which conforms to such an interface.
     It is left as an interface within agate, in order to reduce explicit dependence on Varys.
     """
 

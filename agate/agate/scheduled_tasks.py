@@ -10,14 +10,14 @@ from core.settings import MESSAGE_RETRIEVAL
 
 _scheduler = BackgroundScheduler()
 
-_queue_reader = QueueReader()
+_queue_reader = QueueReader(MESSAGE_RETRIEVAL)
 
 
 def queue_retrieve_task():
     """
     Task to read the queues and update ingestion attempts accordingly
     """
-    _queue_reader.update(MESSAGE_RETRIEVAL)
+    _queue_reader.update()
 
 
 def clear_old_tokens_task():
