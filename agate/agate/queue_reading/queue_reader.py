@@ -28,7 +28,7 @@ class QueueReader:
         This method reads the queues for new messages and interprets the information
         """
 
-        # self._receive(message_retrieval, exchange="inbound-s3", update_lists=False, exchange_key="inbound-s3")
+        # self._receive(exchange="inbound-s3", update_lists=False, exchange_key="inbound-s3")
 
         self._receive(exchange="inbound-matched", update_lists=True, exchange_key="inbound-matched")
 
