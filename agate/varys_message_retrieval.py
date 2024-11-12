@@ -9,7 +9,7 @@ class VarysMessageRetrieval(iMessageRetrieval):
     """
 
     def __init__(self,
-                 queue_suffix: str, 
+                 queue_suffix: str,
                  timeout: float,
                  config_path: str,
                  profile: str,
