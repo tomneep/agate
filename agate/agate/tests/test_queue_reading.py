@@ -3,7 +3,7 @@ from unittest.mock import Mock
 from agate.queue_reading.queue_reader import QueueReader
 from agate.queue_reading.tracking_models import Project, ProjectSite
 from agate.models import IngestionAttempt
-from agate.i_message_retrieval import iMessageRetrieval
+from agate.message_retrieval_protocol import MessageRetrievalProtocol
 
 inbound_matched_example = """{
    "uuid":"4d35e1bf-44f9-4901-a8c6-b4751746a722",
@@ -70,7 +70,7 @@ class QueueReadingTestCase(TestCase):
 
         self.assertEqual(IngestionAttempt.objects.count(), 0)
 
-        retrieval = iMessageRetrieval()
+        retrieval = Mock()
         retrieval.receive_batch = Mock(return_value=[])
 
         q = QueueReader(retrieval)
@@ -87,7 +87,7 @@ class QueueReadingTestCase(TestCase):
         message = Mock()
         message.body = inbound_matched_example
 
-        retrieval = iMessageRetrieval()
+        retrieval = Mock()
 
         def side_effect_func(exchange):
             if exchange == "inbound-matched":
@@ -121,7 +121,7 @@ class QueueReadingTestCase(TestCase):
         message = Mock()
         message.body = inbound_matched_example
 
-        retrieval = iMessageRetrieval()
+        retrieval = Mock()
 
         def side_effect_func(exchange):
             if exchange == "inbound-matched":

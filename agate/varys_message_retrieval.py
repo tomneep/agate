@@ -1,9 +1,9 @@
 from typing import Any, List
-from agate.i_message_retrieval import iMessageRetrieval
+from agate.message_retrieval_protocol import MessageRetrievalProtocol
 from varys import Varys
 
 
-class VarysMessageRetrieval(iMessageRetrieval):
+class VarysMessageRetrieval(MessageRetrievalProtocol):
     """
     A message retriever based on the Varys-RabbitMQ workflow
     """

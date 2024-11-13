@@ -2,7 +2,7 @@ from .tracking_models import Project, ProjectSite
 import json
 import logging
 from agate.queue_reading.ingestion_updater import IngestionUpdater
-from agate.i_message_retrieval import iMessageRetrieval
+from agate.message_retrieval_protocol import MessageRetrievalProtocol
 
 logger = logging.getLogger(__name__)
 
@@ -20,8 +20,8 @@ class QueueReader:
 
     It delegates the actual interpretation of the message to the IngestionUpdater class
     """
-    def __init__(self, message_retrieval: iMessageRetrieval):
-        self._message_retrieval = message_retrieval
+    def __init__(self, message_retrieval: MessageRetrievalProtocol):
+        self._message_retrieval:MessageRetrievalProtocol = message_retrieval
 
     def update(self) -> None:
         """

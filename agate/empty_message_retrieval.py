@@ -1,8 +1,8 @@
 from typing import Any, List
-from agate.i_message_retrieval import iMessageRetrieval
+from agate.message_retrieval_protocol import MessageRetrievalProtocol
 
 
-class EmptyMessageRetrieval(iMessageRetrieval):
+class EmptyMessageRetrieval(MessageRetrievalProtocol):
     """
     A dummy message retriever which never receives any messages
     """
