@@ -70,7 +70,7 @@ class QueueReadingTestCase(TestCase):
 
         self.assertEqual(IngestionAttempt.objects.count(), 0)
 
-        retrieval = Mock()
+        retrieval: MessageRetrievalProtocol = Mock()
         retrieval.receive_batch = Mock(return_value=[])
 
         q = QueueReader(retrieval)
@@ -87,7 +87,7 @@ class QueueReadingTestCase(TestCase):
         message = Mock()
         message.body = inbound_matched_example
 
-        retrieval = Mock()
+        retrieval: MessageRetrievalProtocol = Mock()
 
         def side_effect_func(exchange):
             if exchange == "inbound-matched":
@@ -121,7 +121,7 @@ class QueueReadingTestCase(TestCase):
         message = Mock()
         message.body = inbound_matched_example
 
-        retrieval = Mock()
+        retrieval: MessageRetrievalProtocol = Mock()
 
         def side_effect_func(exchange):
             if exchange == "inbound-matched":

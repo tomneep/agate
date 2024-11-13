@@ -21,7 +21,7 @@ class QueueReader:
     It delegates the actual interpretation of the message to the IngestionUpdater class
     """
     def __init__(self, message_retrieval: MessageRetrievalProtocol):
-        self._message_retrieval:MessageRetrievalProtocol = message_retrieval
+        self._message_retrieval: MessageRetrievalProtocol = message_retrieval
 
     def update(self) -> None:
         """
