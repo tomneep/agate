@@ -6,6 +6,7 @@ REMEMBER: If modfiying the content of this file, reflect the changes in local_se
 """
 
 import os
+from empty_message_retrieval import EmptyMessageRetrieval
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -28,3 +29,5 @@ DATABASES = {
 }
 
 ONYX_DOMAIN = ''
+
+MESSAGE_RETRIEVAL = EmptyMessageRetrieval()
