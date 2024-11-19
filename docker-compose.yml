@@ -16,15 +16,20 @@ services:
       
     environment:
       - SECRET_KEY=zbfj^u2!7-7(k6u0crkz#@v+=vd8+iyu+)9u+v^$8p5fon1_+3
-      - HOST_NAME=127.0.0.1
+      - ALLOWED_HOST=127.0.0.1
+      - DEBUG=True
+      - ADMIN_EMAIL=n.a.butcher@bham.ac.uk
       - DATABASE_NAME=db_service_test
       - DATABASE_USER=postgres
       - DATABASE_PASSWORD=postgres
       - DATABASE_HOST=db_service
       - ONYX_DOMAIN=http://phonyx_service:80
       - CORS_ALLOWED_ORIGINS=http://localhost:5173/
+      - CSRF_TRUSTED_ORIGINS=http://localhost:5173/
+      - VARYS_CONFiG_PATH=varys_config.cfg
     command: >
-      bash -c "python manage.py makemigrations agate &&
+      bash -c "cp core/local_settings.env.py core/local_settings.py &&
+               python manage.py makemigrations agate &&
                python manage.py migrate &&
                python manage.py check &&
                python manage.py runserver 0.0.0.0:8000"
