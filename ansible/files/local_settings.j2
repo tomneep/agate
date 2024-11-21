@@ -1,0 +1,44 @@
+import os
+from varys_message_retrieval import VarysMessageRetrieval
+from empty_message_retrieval import EmptyMessageRetrieval
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Create a SECRET_KEY.
+SECRET_KEY = "{{djangosecretkey}}"
+
+# Set to True if in development, or False is in production
+DEBUG = "{{django_debug}}" == "True"
+
+# Set to ['*'] if in development, or specific IP addresses and domains if in production
+ALLOWED_HOSTS = ["{{allowed_host}}"]
+
+# Provide the email address for the site admin (e.g. the researcher/research team)
+ADMIN_EMAIL = "{{email}}"
+
+# Set the database name below
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "{{dbname}}",
+        "USER": "{{dbuser}}",
+        "PASSWORD": "{{dbpassword}}",
+        "HOST": "{{ postgres_client_host }}",
+    }
+}
+
+CORS_ALLOWED_ORIGINS = [
+    allowed_origin
+    for allowed_origin in "{{cors_allowed_origins}}".split(",")
+    if allowed_origin
+]
+CSRF_TRUSTED_ORIGINS = [
+    trusted_origin
+    for trusted_origin in "{{csrf_trusted_origins}}".split(",")
+    if trusted_origin
+]
+
+
+ONYX_DOMAIN = "{{onyxdomain}}"
+
+MESSAGE_RETRIEVAL = {{message_retrieval}}

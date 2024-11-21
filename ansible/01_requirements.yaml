@@ -1,0 +1,19 @@
+---
+- hosts: all
+  gather_facts: no
+  tasks:
+    - name: Running apt update
+      apt: update_cache=yes
+    - name: Installing apt packages
+      apt: name={{item}} state=present
+      with_items:
+       - uwsgi
+       - nginx
+    - name: install virtualenv
+      pip: name=virtualenv extra_args=--upgrade
+    - name: Initiate virtualenv
+      pip: virtualenv="{{venv_dir}}" 
+           virtualenv_python=python3.12
+           requirements=../requirements.txt
+    - name: install gunicorn
+      pip: name=gunicorn virtualenv={{venv_dir}} extra_args=--upgrade

@@ -1,0 +1,11 @@
+all:
+    vars:
+        postgres_client_host: db_service
+        postgres_client_usr: postgres
+        postgres_client_pswd: postgres
+        email: n.a.butcher@bham.ac.uk
+        onyxdomain: http://phonyx_service:80
+        django_debug: False
+        allowed_host: 127.0.0.1
+        cors_allowed_origins: http://localhost:5173/
+        csrf_trusted_origins: http://localhost:5173/

@@ -1,0 +1,31 @@
+---
+- hosts: all
+  gather_facts: no
+  tasks:
+    - name: copy local settings file
+      template: src=files/local_settings.j2 dest={{ django_dir }}/core/local_settings.py
+    - name: django collectstatic
+      shell: 
+        cmd: "{{venv_dir}}/bin/python manage.py collectstatic --noinput"
+        chdir: "{{ django_dir }}"
+    - name: django migrations
+      shell: 
+        cmd: "{{venv_dir}}/bin/python manage.py makemigrations agate --noinput"
+        chdir: "{{ django_dir }}"
+    - name: django migrate
+      shell: 
+        cmd: "{{venv_dir}}/bin/python manage.py migrate --noinput"
+        chdir: "{{ django_dir }}"
+    - name: django create superuser
+      shell: 
+        cmd: "{{venv_dir}}/bin/python manage.py createsuperuser --noinput"
+        chdir: "{{ django_dir }}"
+      environment:
+        DJANGO_SUPERUSER_USERNAME: "{{djangosuperuser}}"
+        DJANGO_SUPERUSER_EMAIL: "{{email}}"
+        DJANGO_SUPERUSER_PASSWORD: "{{djangosuperuser_pswd}}"
+      ignore_errors: true
+    - name: django check
+      shell: 
+        cmd: "{{venv_dir}}/bin/python manage.py check"
+        chdir: "{{ django_dir }}"

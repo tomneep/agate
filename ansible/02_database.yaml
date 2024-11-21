@@ -1,0 +1,26 @@
+---
+- hosts: all
+  gather_facts: no
+
+  tasks:
+  - name: ensure database is created
+    postgresql_db: name={{dbname}} 
+                   login_host={{ postgres_client_host }} 
+                   login_user={{postgres_client_usr}} 
+                   login_password={{postgres_client_pswd}}
+    vars:
+      ansible_python_interpreter: "{{venv_dir}}/bin/python"
+  - name: create non-admin database user
+    postgresql_user: db={{dbname}} name={{dbuser}} password={{dbpassword}}
+                     login_host={{ postgres_client_host }} 
+                     login_user={{postgres_client_usr}} 
+                     login_password={{postgres_client_pswd}}
+    vars:
+      ansible_python_interpreter: "{{venv_dir}}/bin/python"
+  - name: ensure user does not have unnecessary privilege
+    postgresql_user: name={{dbuser}} role_attr_flags=NOSUPERUSER,NOCREATEDB
+                     login_host={{ postgres_client_host }} 
+                     login_user={{postgres_client_usr}} 
+                     login_password={{postgres_client_pswd}}
+    vars:
+      ansible_python_interpreter: "{{venv_dir}}/bin/python"

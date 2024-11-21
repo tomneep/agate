@@ -1,0 +1,24 @@
+all:
+    vars:
+        dbname: agate
+        dbuser: agate
+        dbpassword: "{{ lookup('password', 'postgresqlpasswd.tmp') }}"
+        djangosecretkey: "{{ lookup('password', 'djangosecretkey.tmp', length=35) }}"
+        djangosuperuser: "{{ lookup('password', 'djangosuperuser.tmp', length=15, chars=['ascii_letters']) }}"
+        djangosuperuser_pswd: "{{ lookup('password', 'djangosuperuser_pswd.tmp', length=15) }}"
+        venv_dir: "/tmp/venv"
+        django_dir: ../agate
+        message_retrieval:  | 
+            VarysMessageRetrieval(
+                                                  queue_suffix="agate",
+                                                  timeout=1,
+                                                  config_path="{{django_dir}}/varys_config.cfg",
+                                                  profile="test",
+                                                  logfile="varys.log",
+                                                  log_level="DEBUG",
+                                                  auto_acknowledge=False)
+
+        message_retrieval_2: EmptyMessageRetrieval()
+
+
+
