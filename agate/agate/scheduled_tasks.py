@@ -41,12 +41,6 @@ def clear_old_archived_ingest_attempts_task():
 
 def start_scheduler():
     """Start our background scheduler."""
-    if not (os.environ.get('UWSGI_ORIGINAL_PROC_NAME') or os.environ.get('RUN_MAIN')):
-        # UWSGI_ORIGINAL_PROC_NAME => we're running under uwsgi
-        # RUN_MAIN => we're in the development server, and the main process
-        # Otherwise, don't start the scheduler.
-        return
-
     _scheduler.add_job(queue_retrieve_task, 'interval', seconds=20)
     _scheduler.add_job(clear_old_tokens_task, 'interval', hours=23)
     # _scheduler.add_job(clear_old_archived_ingest_attempts_task, 'interval', hours=23)
