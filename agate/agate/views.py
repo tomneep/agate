@@ -19,6 +19,33 @@ def ingestion_attempt_response(request, project=""):
     return JsonResponse(data, safe=False)
 
 
+def single_ingestion_attempt_response(request, uuid=""):
+    try:
+        obj = IngestionAttempt.objects.get(uuid=uuid)
+    except IngestionAttempt.DoesNotExist:
+        return HttpResponse('Unauthorized', status=status.HTTP_404_NOT_FOUND)
+
+    auth = request.headers.get("Authorization")
+    if (not check_authorized(auth, obj.site, obj.project)):
+        return HttpResponse('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
+    data = serializers.serialize('json', obj)
+    return JsonResponse(data, safe=False)
+
+
+def archive_ingestion_attempt(request, uuid=""):
+    try:
+        obj = IngestionAttempt.objects.get(uuid=uuid)
+    except IngestionAttempt.DoesNotExist:
+        return HttpResponse('Unauthorized', status=status.HTTP_404_NOT_FOUND)
+
+    auth = request.headers.get("Authorization")
+    if (not check_authorized(auth, obj.site, obj.project)):
+        return HttpResponse('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
+    obj.archived = True
+    obj.save()
+    return HttpResponse(status=status.HTTP_200_OK)
+
+
 def projects(request):
     route = f"{ONYX_DOMAIN}/projects"
     headers = {"Authorization": request.headers.get("Authorization")}
