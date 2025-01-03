@@ -36,7 +36,7 @@ def archive_ingestion_attempt(request, uuid=""):
     try:
         obj = IngestionAttempt.objects.get(uuid=uuid)
     except IngestionAttempt.DoesNotExist:
-        return HttpResponse('Unauthorized', status=status.HTTP_404_NOT_FOUND)
+        return HttpResponse('Not found', status=status.HTTP_404_NOT_FOUND)
 
     auth = request.headers.get("Authorization")
     if (not check_authorized(auth, obj.site, obj.project)):
