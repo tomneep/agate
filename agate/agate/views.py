@@ -39,7 +39,7 @@ def archive_ingestion_attempt(request, uuid=""):
         return HttpResponse('Not found', status=status.HTTP_404_NOT_FOUND)
 
     auth = request.headers.get("Authorization")
-    if (not check_authorized(auth, obj.site, obj.project)):
+    if not check_authorized(auth, obj.site, obj.project):
         return HttpResponse('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
     obj.archived = True
     obj.save()
