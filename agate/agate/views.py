@@ -26,7 +26,7 @@ def single_ingestion_attempt_response(request, uuid=""):
         return HttpResponse('Unauthorized', status=status.HTTP_404_NOT_FOUND)
 
     auth = request.headers.get("Authorization")
-    if (not check_authorized(auth, obj.site, obj.project)):
+    if not check_authorized(auth, obj.site, obj.project):
         return HttpResponse('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
     data = serializers.serialize('json', obj)
     return JsonResponse(data, safe=False)
