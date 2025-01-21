@@ -8,22 +8,34 @@ import requests
 from .authorisation import check_project_authorized, find_site, check_authorized
 from core.settings import ONYX_DOMAIN
 
+from .serializers import IngestionSerializer
+from .pagination import MyCursorPagination
+from rest_framework.generics import ListAPIView
 
-def ingestion_attempt_response(request, project=""):
-    auth = request.headers.get("Authorization")
-    if (not check_project_authorized(auth, project)):
-        return HttpResponse('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
-    objs = IngestionAttempt.objects.filter(project=project, site=find_site(auth),
-                                           archived=False).order_by('created_at')
-    data = serializers.serialize('json', objs)
-    return JsonResponse(data, safe=False)
+
+class IngestionAPIView(ListAPIView):
+    queryset = IngestionAttempt.objects.all()
+    serializer_class = IngestionSerializer
+    pagination_class = MyCursorPagination
+
+    def get_queryset(self):
+        auth = self.request.headers.get("Authorization")
+        project_name = self.request.query_params.get("project", None)
+        return IngestionAttempt.objects.filter(project=project_name, site=find_site(auth), archived=False)
+
+    def list(self, request, *args, **kwargs):
+        auth = request.headers.get("Authorization")
+        project_name = request.query_params.get("project", None)
+        if (project_name is None) or (not check_project_authorized(auth, project_name)):
+            return HttpResponse('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
+        return super().list(request, *args, **kwargs)
 
 
 def single_ingestion_attempt_response(request, uuid=""):
     try:
         obj = IngestionAttempt.objects.get(uuid=uuid)
     except IngestionAttempt.DoesNotExist:
-        return HttpResponse('Unauthorized', status=status.HTTP_404_NOT_FOUND)
+        return HttpResponse('Not found', status=status.HTTP_404_NOT_FOUND)
 
     auth = request.headers.get("Authorization")
     if not check_authorized(auth, obj.site, obj.project):
