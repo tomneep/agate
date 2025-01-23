@@ -8,6 +8,7 @@ urlpatterns = [
     path("ingestion/", views.IngestionAPIView.as_view()),
     path("single/<str:uuid>/", views.single_ingestion_attempt_response),
     path("archive/<str:uuid>/", views.archive_ingestion_attempt),
+    path("delete/<str:uuid>/", views.delete_ingestion_attempt),
     path("profile/", views.profile),
     path("projects/", views.projects),
     path("update/", views.update_ingestion_attempt),
