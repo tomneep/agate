@@ -3,103 +3,22 @@ from django.test import TestCase
 from agate.queue_reading.ingestion_updater import IngestionUpdater, IngestionAttempt
 
 inbound_matched_example = """{
-   "uuid":"4d35e1bf-44f9-4901-a8c6-b4751746a722",
+   "uuid":"00e37b53-7c0f-4fd5-9515-cd1b00ec4818",
    "site":"synthscape",
-   "raw_site":"synthscape.ukhsa",
-   "uploaders":[
-      "bryn-synthscape-ukhsa"
-   ],
-   "match_timestamp":1727098664533980741,
-   "artifact":"synthscape|0|92274db4-3535-47db-b6f6-151354597142",
    "run_index":"0",
-   "run_id":"92274db4-3535-47db-b6f6-151354597142",
+   "run_id":"97abbef9-20b7-441f-b929-886c602059e6",
    "project":"synthscape",
    "platform":"illumina",
-   "files":{
-      ".1.fastq.gz":{
-         "uri":"s3://synthscape-synthscape.ukhsa-illumina-test/synthscape.0.92274db4-3535-47db-b6f6-151354597142.1.fastq.gz",
-         "etag":"f667f435136e91b986254d735cee1c13",
-         "key":"synthscape.0.92274db4-3535-47db-b6f6-151354597142.1.fastq.gz",
-         "submitter":"bryn-synthscape-ukhsa",
-         "parsed_fname":{
-            "project":"synthscape",
-            "run_index":"0",
-            "run_id":"92274db4-3535-47db-b6f6-151354597142",
-            "direction":"1",
-            "ftype":"fastq",
-            "gzip":"gz"
-         }
-      },
-      ".2.fastq.gz":{
-         "uri":"s3://synthscape-synthscape.ukhsa-illumina-test/synthscape.0.92274db4-3535-47db-b6f6-151354597142.2.fastq.gz",
-         "etag":"de2fed484dcad68d50ec6673df6b3670",
-         "key":"synthscape.0.92274db4-3535-47db-b6f6-151354597142.2.fastq.gz",
-         "submitter":"bryn-synthscape-ukhsa",
-         "parsed_fname":{
-            "project":"synthscape",
-            "run_index":"0",
-            "run_id":"92274db4-3535-47db-b6f6-151354597142",
-            "direction":"2",
-            "ftype":"fastq",
-            "gzip":"gz"
-         }
-      },
-      ".csv":{
-         "uri":"s3://synthscape-synthscape.ukhsa-illumina-test/synthscape.0.92274db4-3535-47db-b6f6-151354597142.csv",
-         "etag":"714c18df9c62b30f70443219467fcba1",
-         "key":"synthscape.0.92274db4-3535-47db-b6f6-151354597142.csv",
-         "submitter":"bryn-synthscape-ukhsa",
-         "parsed_fname":{
-            "project":"synthscape",
-            "run_index":"0",
-            "run_id":"92274db4-3535-47db-b6f6-151354597142",
-            "ftype":"csv"
-         }
-      }
-   },
    "test_flag":true
 }"""
 
 inbound_to_validate_example = """{
-  "uuid": "4d35e1bf-44f9-4901-a8c6-b4751746a722",
-  "site": "gosh",
-  "raw_site": "gosh.mscape",
-  "uploaders": [
-    "bryn-gosh-mscape"
-  ],
-  "match_timestamp": 1729590295622335200,
-  "artifact": "mscape|11|0e324158-b7a6-4dc1-9891-b63a16f4db5b",
+  "uuid": "00e37b53-7c0f-4fd5-9515-cd1b00ec4818",
+  "site": "wales",
   "run_index": "11",
-  "run_id": "0e324158-b7a6-4dc1-9891-b63a16f4db5b",
+  "run_id": "a11598f1-56af-44fb-8906-a48aa6a2638c",
   "project": "mscape",
   "platform": "ont",
-  "files": {
-    ".csv": {
-      "uri": "s3://mscape-gosh.mscape-ont-prod/mscape.11.0e324158-b7a6-4dc1-9891-b63a16f4db5b.csv",
-      "etag": "1db51024e42066aa2735fa2e6425f296",
-      "key": "mscape.11.0e324158-b7a6-4dc1-9891-b63a16f4db5b.csv",
-      "submitter": "bryn-gosh-mscape",
-      "parsed_fname": {
-        "project": "mscape",
-        "run_index": "11",
-        "run_id": "0e324158-b7a6-4dc1-9891-b63a16f4db5b",
-        "ftype": "csv"
-      }
-    },
-    ".fastq.gz": {
-      "uri": "s3://mscape-gosh.mscape-ont-prod/mscape.11.0e324158-b7a6-4dc1-9891-b63a16f4db5b.fastq.gz",
-      "etag": "8ef29ded2e7a6712072768fd6cf9ce4f-31",
-      "key": "mscape.11.0e324158-b7a6-4dc1-9891-b63a16f4db5b.fastq.gz",
-      "submitter": "bryn-gosh-mscape",
-      "parsed_fname": {
-        "project": "mscape",
-        "run_index": "11",
-        "run_id": "0e324158-b7a6-4dc1-9891-b63a16f4db5b",
-        "ftype": "fastq",
-        "gzip": "gz"
-      }
-    }
-  },
   "test_flag": false,
   "validate": true,
   "onyx_test_create_status": true,
@@ -107,67 +26,17 @@ inbound_to_validate_example = """{
 }"""
 
 inbound_results_example = """{
-  "uuid": "4d35e1bf-44f9-4901-a8c6-b4751746a722",
-  "site": "synthscape",
-  "raw_site": "synthscape.ukhsa",
-  "uploaders": [
-    "bryn-synthscape-ukhsa"
-  ],
-  "match_timestamp": 1727098664533980700,
-  "artifact": "synthscape|0|92274db4-3535-47db-b6f6-151354597142",
+  "uuid": "00e37b53-7c0f-4fd5-9515-cd1b00ec4818",
+  "site": "house",
   "run_index": "0",
-  "run_id": "92274db4-3535-47db-b6f6-151354597142",
+  "run_id": "90c53bb2-92bb-40a6-b975-c195fae96279",
   "project": "synthscape",
   "platform": "illumina",
-  "files": {
-    ".1.fastq.gz": {
-      "uri":
-      "s3://synthscape-synthscape.ukhsa-illumina-test/synthscape.0.92274db4-3535-47db-b6f6-151354597142.1.fastq.gz",
-      "etag": "f667f435136e91b986254d735cee1c13",
-      "key": "synthscape.0.92274db4-3535-47db-b6f6-151354597142.1.fastq.gz",
-      "submitter": "bryn-synthscape-ukhsa",
-      "parsed_fname": {
-        "project": "synthscape",
-        "run_index": "0",
-        "run_id": "92274db4-3535-47db-b6f6-151354597142",
-        "direction": "1",
-        "ftype": "fastq",
-        "gzip": "gz"
-      }
-    },
-    ".2.fastq.gz": {
-      "uri":
-      "s3://synthscape-synthscape.ukhsa-illumina-test/synthscape.0.92274db4-3535-47db-b6f6-151354597142.2.fastq.gz",
-      "etag": "de2fed484dcad68d50ec6673df6b3670",
-      "key": "synthscape.0.92274db4-3535-47db-b6f6-151354597142.2.fastq.gz",
-      "submitter": "bryn-synthscape-ukhsa",
-      "parsed_fname": {
-        "project": "synthscape",
-        "run_index": "0",
-        "run_id": "92274db4-3535-47db-b6f6-151354597142",
-        "direction": "2",
-        "ftype": "fastq",
-        "gzip": "gz"
-      }
-    },
-    ".csv": {
-      "uri": "s3://synthscape-synthscape.ukhsa-illumina-test/synthscape.0.92274db4-3535-47db-b6f6-151354597142.csv",
-      "etag": "714c18df9c62b30f70443219467fcba1",
-      "key": "synthscape.0.92274db4-3535-47db-b6f6-151354597142.csv",
-      "submitter": "bryn-synthscape-ukhsa",
-      "parsed_fname": {
-        "project": "synthscape",
-        "run_index": "0",
-        "run_id": "92274db4-3535-47db-b6f6-151354597142",
-        "ftype": "csv"
-      }
-    }
-  },
   "test_flag": true,
   "validate": false,
   "onyx_test_create_errors": {
     "site": [
-      "Site with code=synthscape does not exist."
+      "Site with code=house does not exist."
     ],
     "iso_region": [
       "Select a valid choice. Perhaps you meant: GB-FAL"
@@ -176,55 +45,18 @@ inbound_results_example = """{
 }"""
 
 inbound_results_passed_example = """{
-  "uuid": "4d35e1bf-44f9-4901-a8c6-b4751746a722",
-  "site": "gosh",
-  "raw_site": "gosh.mscape",
-  "uploaders": [
-    "bryn-gosh-mscape"
-  ],
-  "match_timestamp": 1729590295622335200,
-  "artifact": "mscape|11|0e324158-b7a6-4dc1-9891-b63a16f4db5b",
+  "uuid": "00e37b53-7c0f-4fd5-9515-cd1b00ec4818",
+  "site": "paris",
   "run_index": "11",
   "run_id": "0e324158-b7a6-4dc1-9891-b63a16f4db5b",
   "project": "mscape",
   "platform": "ont",
-  "files": {
-    ".csv": {
-      "uri": "s3://mscape-gosh.mscape-ont-prod/mscape.11.0e324158-b7a6-4dc1-9891-b63a16f4db5b.csv",
-      "etag": "1db51024e42066aa2735fa2e6425f296",
-      "key": "mscape.11.0e324158-b7a6-4dc1-9891-b63a16f4db5b.csv",
-      "submitter": "bryn-gosh-mscape",
-      "parsed_fname": {
-        "project": "mscape",
-        "run_index": "11",
-        "run_id": "0e324158-b7a6-4dc1-9891-b63a16f4db5b",
-        "ftype": "csv"
-      }
-    },
-    ".fastq.gz": {
-      "uri": "s3://mscape-gosh.mscape-ont-prod/mscape.11.0e324158-b7a6-4dc1-9891-b63a16f4db5b.fastq.gz",
-      "etag": "8ef29ded2e7a6712072768fd6cf9ce4f-31",
-      "key": "mscape.11.0e324158-b7a6-4dc1-9891-b63a16f4db5b.fastq.gz",
-      "submitter": "bryn-gosh-mscape",
-      "parsed_fname": {
-        "project": "mscape",
-        "run_index": "11",
-        "run_id": "0e324158-b7a6-4dc1-9891-b63a16f4db5b",
-        "ftype": "fastq",
-        "gzip": "gz"
-      }
-    }
-  },
   "test_flag": false,
   "validate": true,
   "onyx_test_create_status": true,
-  "biosample_id": "Pos_Control_160524",
   "rerun": false,
   "scylla_version": "v1.3.2",
-  "anonymised_biosample_id": "B-B94686E620",
-  "anonymised_run_id": "R-CD31FB0258",
-  "climb_id": "C-D4A3833C93",
-  "anonymised_run_index": "RI-09859F9CE7",
+  "climb_id": "A-GH3A9993FAKE",
   "onyx_create_status": true,
   "created": true,
   "published": true
@@ -253,14 +85,14 @@ class IngestionCreateTestCase(TestCase):
         IngestionUpdater.update(data, "inbound-matched")
 
         self.assertEqual(IngestionAttempt.objects.count(), 1)
-        attempt = IngestionAttempt.objects.get(uuid="4d35e1bf-44f9-4901-a8c6-b4751746a722")
-        self.assertEqual(attempt.uuid, "4d35e1bf-44f9-4901-a8c6-b4751746a722")
+        attempt = IngestionAttempt.objects.get(uuid="00e37b53-7c0f-4fd5-9515-cd1b00ec4818")
+        self.assertEqual(attempt.uuid, "00e37b53-7c0f-4fd5-9515-cd1b00ec4818")
         self.assertEqual(attempt.name, "ToBeDecided")
         self.assertEqual(attempt.project, "synthscape")
         self.assertEqual(attempt.platform, "illumina")
         self.assertEqual(attempt.site, "synthscape")
         self.assertEqual(attempt.run_index, "0")
-        self.assertEqual(attempt.run_id, "92274db4-3535-47db-b6f6-151354597142")
+        self.assertEqual(attempt.run_id, "97abbef9-20b7-441f-b929-886c602059e6")
         self.assertEqual(attempt.is_published, False)
         self.assertEqual(attempt.is_test_attempt, True)
         self.assertEqual(attempt.climb_id, "")
@@ -276,14 +108,14 @@ class IngestionCreateTestCase(TestCase):
         IngestionUpdater.update(data, "inbound-to-validate")
 
         self.assertEqual(IngestionAttempt.objects.count(), 1)
-        attempt = IngestionAttempt.objects.get(uuid="4d35e1bf-44f9-4901-a8c6-b4751746a722")
-        self.assertEqual(attempt.uuid, "4d35e1bf-44f9-4901-a8c6-b4751746a722")
+        attempt = IngestionAttempt.objects.get(uuid="00e37b53-7c0f-4fd5-9515-cd1b00ec4818")
+        self.assertEqual(attempt.uuid, "00e37b53-7c0f-4fd5-9515-cd1b00ec4818")
         self.assertEqual(attempt.name, "ToBeDecided")
         self.assertEqual(attempt.project, "mscape")
         self.assertEqual(attempt.platform, "ont")
-        self.assertEqual(attempt.site, "gosh")
+        self.assertEqual(attempt.site, "wales")
         self.assertEqual(attempt.run_index, "11")
-        self.assertEqual(attempt.run_id, "0e324158-b7a6-4dc1-9891-b63a16f4db5b")
+        self.assertEqual(attempt.run_id, "a11598f1-56af-44fb-8906-a48aa6a2638c")
         self.assertEqual(attempt.is_published, False)
         self.assertEqual(attempt.is_test_attempt, False)
         self.assertEqual(attempt.climb_id, "")
@@ -299,19 +131,19 @@ class IngestionCreateTestCase(TestCase):
         IngestionUpdater.update(data, "inbound-results")
 
         self.assertEqual(IngestionAttempt.objects.count(), 1)
-        attempt = IngestionAttempt.objects.get(uuid="4d35e1bf-44f9-4901-a8c6-b4751746a722")
-        self.assertEqual(attempt.uuid, "4d35e1bf-44f9-4901-a8c6-b4751746a722")
+        attempt = IngestionAttempt.objects.get(uuid="00e37b53-7c0f-4fd5-9515-cd1b00ec4818")
+        self.assertEqual(attempt.uuid, "00e37b53-7c0f-4fd5-9515-cd1b00ec4818")
         self.assertEqual(attempt.name, "ToBeDecided")
         self.assertEqual(attempt.project, "synthscape")
         self.assertEqual(attempt.platform, "illumina")
-        self.assertEqual(attempt.site, "synthscape")
+        self.assertEqual(attempt.site, "house")
         self.assertEqual(attempt.run_index, "0")
-        self.assertEqual(attempt.run_id, "92274db4-3535-47db-b6f6-151354597142")
+        self.assertEqual(attempt.run_id, "90c53bb2-92bb-40a6-b975-c195fae96279")
         self.assertEqual(attempt.is_published, False)
         self.assertEqual(attempt.is_test_attempt, True)
         self.assertEqual(attempt.climb_id, "")
         self.assertEqual(attempt.error_message,
-                         ("{'site': ['Site with code=synthscape does not exist.'], "
+                         ("{'site': ['Site with code=house does not exist.'], "
                           "'iso_region': ['Select a valid choice. Perhaps you meant: GB-FAL']}")
                          )
         self.assertEqual(attempt.status, IngestionAttempt.Status.VALIDATIONFAIL)
@@ -325,17 +157,17 @@ class IngestionCreateTestCase(TestCase):
         IngestionUpdater.update(data, "inbound-results")
 
         self.assertEqual(IngestionAttempt.objects.count(), 1)
-        attempt = IngestionAttempt.objects.get(uuid="4d35e1bf-44f9-4901-a8c6-b4751746a722")
-        self.assertEqual(attempt.uuid, "4d35e1bf-44f9-4901-a8c6-b4751746a722")
+        attempt = IngestionAttempt.objects.get(uuid="00e37b53-7c0f-4fd5-9515-cd1b00ec4818")
+        self.assertEqual(attempt.uuid, "00e37b53-7c0f-4fd5-9515-cd1b00ec4818")
         self.assertEqual(attempt.name, "ToBeDecided")
         self.assertEqual(attempt.project, "mscape")
         self.assertEqual(attempt.platform, "ont")
-        self.assertEqual(attempt.site, "gosh")
+        self.assertEqual(attempt.site, "paris")
         self.assertEqual(attempt.run_index, "11")
         self.assertEqual(attempt.run_id, "0e324158-b7a6-4dc1-9891-b63a16f4db5b")
         self.assertEqual(attempt.is_published, True)
         self.assertEqual(attempt.is_test_attempt, False)
-        self.assertEqual(attempt.climb_id, "C-D4A3833C93")
+        self.assertEqual(attempt.climb_id, "A-GH3A9993FAKE")
         self.assertEqual(attempt.error_message, "")
         self.assertEqual(attempt.status, IngestionAttempt.Status.SUCCESS)
         self.assertEqual(attempt.archived, False)
@@ -344,14 +176,14 @@ class IngestionCreateTestCase(TestCase):
 class IngestionUpdateTestCase(TestCase):
     def setUp(self):
         IngestionAttempt.objects.create(
-            uuid="4d35e1bf-44f9-4901-a8c6-b4751746a722",
+            uuid="00e37b53-7c0f-4fd5-9515-cd1b00ec4818",
             is_published=False,
             is_test_attempt=False)
 
     def test_ingestion_attempt_created(self):
         self.assertEqual(IngestionAttempt.objects.count(), 1)
-        attempt = IngestionAttempt.objects.get(uuid="4d35e1bf-44f9-4901-a8c6-b4751746a722")
-        self.assertEqual(attempt.uuid, "4d35e1bf-44f9-4901-a8c6-b4751746a722")
+        attempt = IngestionAttempt.objects.get(uuid="00e37b53-7c0f-4fd5-9515-cd1b00ec4818")
+        self.assertEqual(attempt.uuid, "00e37b53-7c0f-4fd5-9515-cd1b00ec4818")
         self.assertEqual(attempt.name, "")
         self.assertEqual(attempt.project, "")
         self.assertEqual(attempt.platform, "")
@@ -373,14 +205,14 @@ class IngestionUpdateTestCase(TestCase):
         IngestionUpdater.update(data, "inbound-matched")
 
         self.assertEqual(IngestionAttempt.objects.count(), 1)
-        attempt = IngestionAttempt.objects.get(uuid="4d35e1bf-44f9-4901-a8c6-b4751746a722")
-        self.assertEqual(attempt.uuid, "4d35e1bf-44f9-4901-a8c6-b4751746a722")
+        attempt = IngestionAttempt.objects.get(uuid="00e37b53-7c0f-4fd5-9515-cd1b00ec4818")
+        self.assertEqual(attempt.uuid, "00e37b53-7c0f-4fd5-9515-cd1b00ec4818")
         self.assertEqual(attempt.name, "ToBeDecided")
         self.assertEqual(attempt.project, "synthscape")
         self.assertEqual(attempt.platform, "illumina")
         self.assertEqual(attempt.site, "synthscape")
         self.assertEqual(attempt.run_index, "0")
-        self.assertEqual(attempt.run_id, "92274db4-3535-47db-b6f6-151354597142")
+        self.assertEqual(attempt.run_id, "97abbef9-20b7-441f-b929-886c602059e6")
         self.assertEqual(attempt.is_published, False)
         self.assertEqual(attempt.is_test_attempt, True)
         self.assertEqual(attempt.climb_id, "")
@@ -396,14 +228,14 @@ class IngestionUpdateTestCase(TestCase):
         IngestionUpdater.update(data, "inbound-to-validate")
 
         self.assertEqual(IngestionAttempt.objects.count(), 1)
-        attempt = IngestionAttempt.objects.get(uuid="4d35e1bf-44f9-4901-a8c6-b4751746a722")
-        self.assertEqual(attempt.uuid, "4d35e1bf-44f9-4901-a8c6-b4751746a722")
+        attempt = IngestionAttempt.objects.get(uuid="00e37b53-7c0f-4fd5-9515-cd1b00ec4818")
+        self.assertEqual(attempt.uuid, "00e37b53-7c0f-4fd5-9515-cd1b00ec4818")
         self.assertEqual(attempt.name, "ToBeDecided")
         self.assertEqual(attempt.project, "mscape")
         self.assertEqual(attempt.platform, "ont")
-        self.assertEqual(attempt.site, "gosh")
+        self.assertEqual(attempt.site, "wales")
         self.assertEqual(attempt.run_index, "11")
-        self.assertEqual(attempt.run_id, "0e324158-b7a6-4dc1-9891-b63a16f4db5b")
+        self.assertEqual(attempt.run_id, "a11598f1-56af-44fb-8906-a48aa6a2638c")
         self.assertEqual(attempt.is_published, False)
         self.assertEqual(attempt.is_test_attempt, False)
         self.assertEqual(attempt.climb_id, "")
@@ -419,19 +251,19 @@ class IngestionUpdateTestCase(TestCase):
         IngestionUpdater.update(data, "inbound-results")
 
         self.assertEqual(IngestionAttempt.objects.count(), 1)
-        attempt = IngestionAttempt.objects.get(uuid="4d35e1bf-44f9-4901-a8c6-b4751746a722")
-        self.assertEqual(attempt.uuid, "4d35e1bf-44f9-4901-a8c6-b4751746a722")
+        attempt = IngestionAttempt.objects.get(uuid="00e37b53-7c0f-4fd5-9515-cd1b00ec4818")
+        self.assertEqual(attempt.uuid, "00e37b53-7c0f-4fd5-9515-cd1b00ec4818")
         self.assertEqual(attempt.name, "ToBeDecided")
         self.assertEqual(attempt.project, "synthscape")
         self.assertEqual(attempt.platform, "illumina")
-        self.assertEqual(attempt.site, "synthscape")
+        self.assertEqual(attempt.site, "house")
         self.assertEqual(attempt.run_index, "0")
-        self.assertEqual(attempt.run_id, "92274db4-3535-47db-b6f6-151354597142")
+        self.assertEqual(attempt.run_id, "90c53bb2-92bb-40a6-b975-c195fae96279")
         self.assertEqual(attempt.is_published, False)
         self.assertEqual(attempt.is_test_attempt, True)
         self.assertEqual(attempt.climb_id, "")
         self.assertEqual(attempt.error_message,
-                         "{'site': ['Site with code=synthscape does not exist.'], \
+                         "{'site': ['Site with code=house does not exist.'], \
 'iso_region': ['Select a valid choice. Perhaps you meant: GB-FAL']}")
         self.assertEqual(attempt.status, IngestionAttempt.Status.VALIDATIONFAIL)
         self.assertEqual(attempt.archived, False)
@@ -444,17 +276,17 @@ class IngestionUpdateTestCase(TestCase):
         IngestionUpdater.update(data, "inbound-results")
 
         self.assertEqual(IngestionAttempt.objects.count(), 1)
-        attempt = IngestionAttempt.objects.get(uuid="4d35e1bf-44f9-4901-a8c6-b4751746a722")
-        self.assertEqual(attempt.uuid, "4d35e1bf-44f9-4901-a8c6-b4751746a722")
+        attempt = IngestionAttempt.objects.get(uuid="00e37b53-7c0f-4fd5-9515-cd1b00ec4818")
+        self.assertEqual(attempt.uuid, "00e37b53-7c0f-4fd5-9515-cd1b00ec4818")
         self.assertEqual(attempt.name, "ToBeDecided")
         self.assertEqual(attempt.project, "mscape")
         self.assertEqual(attempt.platform, "ont")
-        self.assertEqual(attempt.site, "gosh")
+        self.assertEqual(attempt.site, "paris")
         self.assertEqual(attempt.run_index, "11")
         self.assertEqual(attempt.run_id, "0e324158-b7a6-4dc1-9891-b63a16f4db5b")
         self.assertEqual(attempt.is_published, True)
         self.assertEqual(attempt.is_test_attempt, False)
-        self.assertEqual(attempt.climb_id, "C-D4A3833C93")
+        self.assertEqual(attempt.climb_id, "A-GH3A9993FAKE")
         self.assertEqual(attempt.error_message, "")
         self.assertEqual(attempt.status, IngestionAttempt.Status.SUCCESS)
         self.assertEqual(attempt.archived, False)
