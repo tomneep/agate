@@ -32,4 +32,4 @@ ONYX_DOMAIN = ''
 
 MESSAGE_RETRIEVAL = EmptyMessageRetrieval()
 
-LIMITED_PROJECT_LIST = ["Test-Project"]
+LIMITED_PROJECT_LIST = ["synthscape"]

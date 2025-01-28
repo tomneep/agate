@@ -57,7 +57,7 @@ class QueueReader:
                         self._update_lists(data)
                 else:
                     logger.info(f"{data["project"]}: was ignored because it was not on the LIMITED_PROJECT_LIST")
-            
+
             except json.decoder.JSONDecodeError:
                 logger.critical(f"{exchange_key}: not a valid json message: {m.body}")
             finally:

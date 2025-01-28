@@ -104,3 +104,30 @@ class QueueReadingTestCase(TestCase):
         self.assertEqual(attempt.error_message, "")
         self.assertEqual(attempt.status, IngestionAttempt.Status.METADATA)
         self.assertEqual(attempt.archived, False)
+
+    def test_blocked_by_limited_project_list(self):
+
+        self.assertEqual(IngestionAttempt.objects.count(), 0)
+        self.assertEqual(Project.objects.count(), 0)
+        self.assertEqual(ProjectSite.objects.count(), 0)
+
+        message = Mock()
+        message.body = inbound_matched_example
+
+        retrieval: MessageRetrievalProtocol = Mock()
+
+        def side_effect_func(exchange):
+            if exchange == "inbound-matched":
+                return [message]
+            else:
+                return []
+        retrieval.receive_batch = Mock(side_effect=side_effect_func)
+        retrieval.acknowledge_message = Mock()
+
+        with self.settings(LIMITED_PROJECT_LIST=["only_read_this_project"]):
+            q = QueueReader(retrieval)
+            q.update()
+
+        self.assertEqual(IngestionAttempt.objects.count(), 0)
+        self.assertEqual(Project.objects.count(), 0)
+        self.assertEqual(ProjectSite.objects.count(), 0)
