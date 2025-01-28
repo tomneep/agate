@@ -3,7 +3,7 @@ import json
 import logging
 from agate.queue_reading.ingestion_updater import IngestionUpdater
 from agate.message_retrieval_protocol import MessageRetrievalProtocol
-from core.settings import LIMITED_PROJECT_LIST
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +51,7 @@ class QueueReader:
         for m in messages:
             try:
                 data = json.loads(m.body)
-                if (LIMITED_PROJECT_LIST is None or data["project"] in LIMITED_PROJECT_LIST):
+                if (settings.LIMITED_PROJECT_LIST is None or data["project"] in settings.LIMITED_PROJECT_LIST):
                     self._update_item_from_message(data, exchange_key)
                     if update_lists:
                         self._update_lists(data)

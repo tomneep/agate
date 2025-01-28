@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from unittest.mock import Mock
 from agate.queue_reading.queue_reader import QueueReader
 from agate.queue_reading.tracking_models import Project, ProjectSite
@@ -105,6 +105,7 @@ class QueueReadingTestCase(TestCase):
         self.assertEqual(attempt.status, IngestionAttempt.Status.METADATA)
         self.assertEqual(attempt.archived, False)
 
+    @override_settings(LIMITED_PROJECT_LIST=["only_read_this_project"])
     def test_blocked_by_limited_project_list(self):
 
         self.assertEqual(IngestionAttempt.objects.count(), 0)
@@ -124,10 +125,36 @@ class QueueReadingTestCase(TestCase):
         retrieval.receive_batch = Mock(side_effect=side_effect_func)
         retrieval.acknowledge_message = Mock()
 
-        with self.settings(LIMITED_PROJECT_LIST=["only_read_this_project"]):
-            q = QueueReader(retrieval)
-            q.update()
+        q = QueueReader(retrieval)
+        q.update()
 
         self.assertEqual(IngestionAttempt.objects.count(), 0)
         self.assertEqual(Project.objects.count(), 0)
         self.assertEqual(ProjectSite.objects.count(), 0)
+
+    @override_settings(LIMITED_PROJECT_LIST=None)
+    def test_absense_of_limited_project_list(self):
+
+        self.assertEqual(IngestionAttempt.objects.count(), 0)
+        self.assertEqual(Project.objects.count(), 0)
+        self.assertEqual(ProjectSite.objects.count(), 0)
+
+        message = Mock()
+        message.body = inbound_matched_example
+
+        retrieval: MessageRetrievalProtocol = Mock()
+
+        def side_effect_func(exchange):
+            if exchange == "inbound-matched":
+                return [message]
+            else:
+                return []
+        retrieval.receive_batch = Mock(side_effect=side_effect_func)
+        retrieval.acknowledge_message = Mock()
+
+        q = QueueReader(retrieval)
+        q.update()
+
+        self.assertEqual(IngestionAttempt.objects.count(), 1)
+        self.assertEqual(Project.objects.count(), 1)
+        self.assertEqual(ProjectSite.objects.count(), 1)
