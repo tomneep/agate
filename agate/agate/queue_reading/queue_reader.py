@@ -3,6 +3,7 @@ import json
 import logging
 from agate.queue_reading.ingestion_updater import IngestionUpdater
 from agate.message_retrieval_protocol import MessageRetrievalProtocol
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -49,37 +50,32 @@ class QueueReader:
 
         for m in messages:
             try:
-                self._update_item_from_message(m, exchange_key)
-                if update_lists:
-                    self._update_lists(m)
+                data = json.loads(m.body)
+                if (settings.LIMITED_PROJECT_LIST is None or data["project"] in settings.LIMITED_PROJECT_LIST):
+                    self._update_item_from_message(data, exchange_key)
+                    if update_lists:
+                        self._update_lists(data)
+                else:
+                    logger.info(f"{data["project"]}: was ignored because it was not on the LIMITED_PROJECT_LIST")
+
+            except json.decoder.JSONDecodeError:
+                logger.critical(f"{exchange_key}: not a valid json message: {m.body}")
             finally:
                 self._message_retrieval.acknowledge_message(m)
 
-    def _update_item_from_message(self, message, stage: str):
-        """
-        Interprets the message body as a dictionary
-        Delegates interpretation of the dictionary
-        """
-
-        try:
-            data = json.loads(message.body)
-        except json.decoder.JSONDecodeError:
-            logger.critical(f"{stage}: not a valid json message: {message.body}")
-            return
-
+    def _update_item_from_message(self, data, stage: str):
         if "uuid" in data:
             # This message prompts updates to an injection attempt
             IngestionUpdater.update(data, stage)
         else:
-            logger.warning(f"{stage}: message did not refer to a uuid: {message.body}")
+            logger.warning(f"{stage}: message did not refer to a uuid: {data}")
 
-    def _update_lists(self, message):
+    def _update_lists(self, data):
         """
         This updates the records of projects and sites to monitor
         If the message refers to projects or sites we don't yet know about, then we add them
         """
         try:
-            data = json.loads(message.body)
             project: str = data["project"]
             site: str = data["site"]
             project_site: str = f"{project}-{site}"

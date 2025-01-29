@@ -45,3 +45,5 @@ MESSAGE_RETRIEVAL = VarysMessageRetrieval(
                               logfile="varys.log",
                               log_level="DEBUG",
                               auto_acknowledge=False)
+
+LIMITED_PROJECT_LIST = None

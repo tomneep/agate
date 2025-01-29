@@ -31,3 +31,5 @@ DATABASES = {
 ONYX_DOMAIN = ''
 
 MESSAGE_RETRIEVAL = EmptyMessageRetrieval()
+
+LIMITED_PROJECT_LIST = ["synthscape"]

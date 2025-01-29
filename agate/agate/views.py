@@ -58,6 +58,21 @@ def archive_ingestion_attempt(request, uuid=""):
     return HttpResponse(status=status.HTTP_200_OK)
 
 
+def delete_ingestion_attempt(request, uuid=""):
+
+    if request.method == 'DELETE':
+        try:
+            obj = IngestionAttempt.objects.get(uuid=uuid)
+        except IngestionAttempt.DoesNotExist:
+            return HttpResponse('Not found', status=status.HTTP_404_NOT_FOUND)
+
+        auth = request.headers.get("Authorization")
+        if not check_authorized(auth, obj.site, obj.project):
+            return HttpResponse('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
+        obj.delete()
+        return HttpResponse(status=status.HTTP_200_OK)
+
+
 def projects(request):
     route = f"{ONYX_DOMAIN}/projects"
     headers = {"Authorization": request.headers.get("Authorization")}
