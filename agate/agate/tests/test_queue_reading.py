@@ -15,6 +15,9 @@ inbound_matched_example = """{
    "test_flag":true
 }"""
 
+message = Mock()
+message.body = inbound_matched_example
+
 
 class QueueReadingTestCase(TestCase):
 
@@ -36,9 +39,6 @@ class QueueReadingTestCase(TestCase):
         self.assertEqual(Project.objects.count(), 0)
         self.assertEqual(ProjectSite.objects.count(), 0)
 
-        message = Mock()
-        message.body = inbound_matched_example
-
         retrieval: MessageRetrievalProtocol = Mock()
 
         def side_effect_func(exchange):
@@ -46,6 +46,7 @@ class QueueReadingTestCase(TestCase):
                 return [message]
             else:
                 return []
+
         retrieval.receive_batch = Mock(side_effect=side_effect_func)
         retrieval.acknowledge_message = Mock()
 
@@ -70,9 +71,6 @@ class QueueReadingTestCase(TestCase):
 
         self.assertEqual(IngestionAttempt.objects.count(), 0)
 
-        message = Mock()
-        message.body = inbound_matched_example
-
         retrieval: MessageRetrievalProtocol = Mock()
 
         def side_effect_func(exchange):
@@ -80,6 +78,7 @@ class QueueReadingTestCase(TestCase):
                 return [message]
             else:
                 return []
+
         retrieval.receive_batch = Mock(side_effect=side_effect_func)
         retrieval.acknowledge_message = Mock()
 
@@ -112,9 +111,6 @@ class QueueReadingTestCase(TestCase):
         self.assertEqual(Project.objects.count(), 0)
         self.assertEqual(ProjectSite.objects.count(), 0)
 
-        message = Mock()
-        message.body = inbound_matched_example
-
         retrieval: MessageRetrievalProtocol = Mock()
 
         def side_effect_func(exchange):
@@ -122,6 +118,7 @@ class QueueReadingTestCase(TestCase):
                 return [message]
             else:
                 return []
+
         retrieval.receive_batch = Mock(side_effect=side_effect_func)
         retrieval.acknowledge_message = Mock()
 
@@ -139,9 +136,6 @@ class QueueReadingTestCase(TestCase):
         self.assertEqual(Project.objects.count(), 0)
         self.assertEqual(ProjectSite.objects.count(), 0)
 
-        message = Mock()
-        message.body = inbound_matched_example
-
         retrieval: MessageRetrievalProtocol = Mock()
 
         def side_effect_func(exchange):
@@ -149,6 +143,7 @@ class QueueReadingTestCase(TestCase):
                 return [message]
             else:
                 return []
+
         retrieval.receive_batch = Mock(side_effect=side_effect_func)
         retrieval.acknowledge_message = Mock()
 
