@@ -51,12 +51,13 @@ class QueueReader:
         for m in messages:
             try:
                 data = json.loads(m.body)
-                if (settings.LIMITED_PROJECT_LIST is None or data["project"] in settings.LIMITED_PROJECT_LIST):
+                project = data["project"]
+                if (settings.LIMITED_PROJECT_LIST is None or project in settings.LIMITED_PROJECT_LIST):
                     self._update_item_from_message(data, exchange_key)
                     if update_lists:
                         self._update_lists(data)
                 else:
-                    logger.info(f"{data["project"]}: was ignored because it was not on the LIMITED_PROJECT_LIST")
+                    logger.info(f"{project}: was ignored because it was not on the LIMITED_PROJECT_LIST")
 
             except json.decoder.JSONDecodeError:
                 logger.critical(f"{exchange_key}: not a valid json message: {m.body}")
