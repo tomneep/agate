@@ -1,4 +1,3 @@
-from django.core import serializers
 from django.http import JsonResponse, HttpResponse
 from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt
