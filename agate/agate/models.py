@@ -77,3 +77,8 @@ class IngestionAttempt(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class IngestionAttemptArchived(models.Model):
+    ingestion_attempt = models.ForeignKey(IngestionAttempt, on_delete=models.CASCADE)
+    username_hash = models.CharField(max_length=200)

@@ -12,6 +12,11 @@ class TokenCache(models.Model):
         max_length=100,
     )
 
+    username_hash = models.CharField(
+        max_length=100,
+        default='None'
+    )
+
     projects_output = models.CharField(
         max_length=500,
     )

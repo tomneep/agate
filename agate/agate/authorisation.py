@@ -33,6 +33,17 @@ def find_site(auth):
     return _get_item(auth).site_output
 
 
+def find_username_hash(auth):
+    """
+    String telling which site a provided authorization token originates from
+
+    The onyx API is queried to determine the profile of the token.
+    If the onyx response is not a 200, the token is invalid, and the empty sting is returned.
+    Otherwise site is returned
+    """
+    return _get_item(auth).username_hash
+
+
 def check_authorized(auth, site, project):
     """
     Boolean telling whether a provided authorization token BOTH
@@ -72,10 +83,12 @@ def _populate_entry(auth):
     r = requests.get(route, headers=headers)
     if (not r.status_code == 200):
         site = ''
+        username_hash = ''
     else:
         site = r.json()["data"]["site"]
+        username_hash = hashlib.sha256(r.json()["data"]["username"].encode("utf-8")).hexdigest()
 
     token_hash = hashlib.sha256(auth.encode("utf-8")).hexdigest()
-    item = TokenCache(token_hash=token_hash, projects_output=projects, site_output=site)
+    item = TokenCache(token_hash=token_hash, projects_output=projects, site_output=site, username_hash=username_hash)
     item.save()
     return item

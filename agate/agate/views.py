@@ -1,10 +1,10 @@
 from django.http import JsonResponse, HttpResponse
 from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt
-from .models import IngestionAttempt
+from .models import IngestionAttempt, IngestionAttemptArchived
 from .forms import IngestionAttemptForm
 import requests
-from .authorisation import check_project_authorized, find_site, check_authorized
+from .authorisation import check_project_authorized, find_site, check_authorized, find_username_hash
 from core.settings import ONYX_DOMAIN
 
 from .serializers import IngestionSerializer
@@ -20,7 +20,11 @@ class IngestionAPIView(ListAPIView):
     def get_queryset(self):
         auth = self.request.headers.get("Authorization")
         project_name = self.request.query_params.get("project", None)
-        return IngestionAttempt.objects.filter(project=project_name, site=find_site(auth), archived=False)
+        username_hash = find_username_hash(auth)
+        return IngestionAttempt.objects.filter(project=project_name,
+                                               site=find_site(auth),
+                                               archived=False).exclude(
+                                                   ingestionattemptarchived__username_hash=username_hash)
 
     def list(self, request, *args, **kwargs):
         auth = request.headers.get("Authorization")
@@ -52,8 +56,9 @@ def archive_ingestion_attempt(request, uuid=""):
     auth = request.headers.get("Authorization")
     if not check_authorized(auth, obj.site, obj.project):
         return HttpResponse('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
-    obj.archived = True
-    obj.save()
+    username_hash = find_username_hash(auth)
+    archive_object = IngestionAttemptArchived(ingestion_attempt=obj, username_hash=username_hash)
+    archive_object.save()
     return HttpResponse(status=status.HTTP_200_OK)
 
 
