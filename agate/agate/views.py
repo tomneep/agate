@@ -1,5 +1,5 @@
 from django.core import serializers
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseNotAllowed
 from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt
 from .models import IngestionAttempt
@@ -105,3 +105,4 @@ def update_ingestion_attempt(request):
             return HttpResponse(ingestion.uuid, status=status.HTTP_201_CREATED)
         else:
             return HttpResponse(form.errors, status=status.HTTP_400_BAD_REQUEST)
+    return HttpResponseNotAllowed(permitted_methods=["PUT"])
