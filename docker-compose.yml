@@ -4,10 +4,6 @@ services:
     volumes:
       - ./agate:/agate
     working_dir: /agate
-    links:
-      - rabbitmq_service
-      - db_service
-      - phonyx_service
     depends_on:
       db_service:
         condition: service_healthy
