@@ -105,4 +105,5 @@ def update_ingestion_attempt(request):
             return HttpResponse(ingestion.uuid, status=status.HTTP_201_CREATED)
         else:
             return HttpResponse(form.errors, status=status.HTTP_400_BAD_REQUEST)
-    return HttpResponseNotAllowed(permitted_methods=["PUT"])
+    else:
+        return HttpResponseNotAllowed(permitted_methods=["PUT"])
