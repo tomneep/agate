@@ -1,0 +1,13 @@
+name: ci-docker-compose
+
+on: [pull_request]
+
+jobs:
+  compose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Docker Compose
+        uses: docker/setup-compose-action@v1
+      - name: Run docker compose
+        run: |
+          docker compose
