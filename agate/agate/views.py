@@ -1,7 +1,7 @@
 from django.core import serializers
-from django.http import JsonResponse, HttpResponse, HttpResponseNotAllowed
+from django.http import JsonResponse, HttpResponse
 from rest_framework import status
-from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view
 from .models import IngestionAttempt
 from .forms import IngestionAttemptForm
 import requests
@@ -86,7 +86,7 @@ def profile(request):
     return HttpResponse(r, status=r.status_code)
 
 
-@csrf_exempt
+@api_view(["PUT"])
 def update_ingestion_attempt(request):
     if request.method == 'PUT':
         auth = request.headers.get("Authorization")
@@ -105,5 +105,3 @@ def update_ingestion_attempt(request):
             return HttpResponse(ingestion.uuid, status=status.HTTP_201_CREATED)
         else:
             return HttpResponse(form.errors, status=status.HTTP_400_BAD_REQUEST)
-    else:
-        return HttpResponseNotAllowed(permitted_methods=["PUT"])
