@@ -1,6 +1,8 @@
 from django.http import JsonResponse, HttpResponse
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view
 from .models import IngestionAttempt
 from .forms import IngestionAttemptForm
 import requests
@@ -30,11 +32,9 @@ class IngestionAPIView(ListAPIView):
         return super().list(request, *args, **kwargs)
 
 
+@api_view(["GET"])
 def single_ingestion_attempt_response(request, uuid=""):
-    try:
-        obj = IngestionAttempt.objects.get(uuid=uuid)
-    except IngestionAttempt.DoesNotExist:
-        return HttpResponse('Not found', status=status.HTTP_404_NOT_FOUND)
+    obj = get_object_or_404(IngestionAttempt, uuid=uuid)
 
     auth = request.headers.get("Authorization")
     if not check_authorized(auth, obj.site, obj.project):
@@ -43,11 +43,9 @@ def single_ingestion_attempt_response(request, uuid=""):
     return JsonResponse(serializer.data, safe=False)
 
 
+@api_view(["GET"])
 def archive_ingestion_attempt(request, uuid=""):
-    try:
-        obj = IngestionAttempt.objects.get(uuid=uuid)
-    except IngestionAttempt.DoesNotExist:
-        return HttpResponse('Not found', status=status.HTTP_404_NOT_FOUND)
+    obj = get_object_or_404(IngestionAttempt, uuid=uuid)
 
     auth = request.headers.get("Authorization")
     if not check_authorized(auth, obj.site, obj.project):
@@ -57,12 +55,9 @@ def archive_ingestion_attempt(request, uuid=""):
     return HttpResponse(status=status.HTTP_200_OK)
 
 
+@api_view(["GET"])
 def delete_ingestion_attempt(request, uuid=""):
-
-    try:
-        obj = IngestionAttempt.objects.get(uuid=uuid)
-    except IngestionAttempt.DoesNotExist:
-        return HttpResponse('Not found', status=status.HTTP_404_NOT_FOUND)
+    obj = get_object_or_404(IngestionAttempt, uuid=uuid)
 
     auth = request.headers.get("Authorization")
     if not check_authorized(auth, obj.site, obj.project):
