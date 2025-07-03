@@ -6,8 +6,10 @@ jobs:
   compose:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Set up Docker Compose
         uses: docker/setup-compose-action@v1
-      - name: Run docker compose
+      - name: Run and tear down docker compose
         run: |
-          docker compose up
+          docker compose up -d
+          docker compose down
