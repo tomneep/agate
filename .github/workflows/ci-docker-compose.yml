@@ -1,0 +1,15 @@
+name: ci-docker-compose
+
+on: [pull_request]
+
+jobs:
+  compose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Docker Compose
+        uses: docker/setup-compose-action@v1
+      - name: Run and tear down docker compose
+        run: |
+          docker compose up -d
+          docker compose down
