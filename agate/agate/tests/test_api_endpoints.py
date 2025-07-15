@@ -2,6 +2,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from agate.models import IngestionAttempt
 from agate.caching import TokenCache
+from django.urls import reverse
 import hashlib
 
 auth = "my_token"
@@ -30,13 +31,12 @@ class IngestionAttemptAPITests(APITestCase):
 
     def test_unauthorized_access(self):
         # Test if the API correctly denies unauthorized access
-        response = self.client.get('/ingestion/')
-        print(response)
+        response = self.client.get(reverse("agate:ingestion"))
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_ingestion_attempts(self):
         # Test if GET returns the list of ingestion attempts
-        response = self.client.get('/ingestion/?project=project', HTTP_Authorization="my_token")
+        response = self.client.get(reverse("agate:ingestion"), data={"project": "project"}, HTTP_Authorization=auth)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data['results']), 2)  # Expecting 2 ingestion attempts
         self.assertEqual(response.data['previous'], None)
@@ -44,7 +44,7 @@ class IngestionAttemptAPITests(APITestCase):
 
     def test_get_single_ingestion_attempt(self):
         # Test if GET returns the list of ingestion attempts
-        response = self.client.get('/single/user1/', HTTP_Authorization="my_token")
+        response = self.client.get(reverse("agate:single", args=["user1"]), HTTP_Authorization=auth)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()['uuid'], 'user1')
         self.assertEqual(response.json()['project'], 'project')
@@ -56,12 +56,12 @@ class IngestionAttemptAPITests(APITestCase):
                                         project="project",
                                         site="here",
                                         is_test_attempt=False)
-        response = self.client.get('/single/user7/', HTTP_Authorization="my_token")
+        response = self.client.get(reverse("agate:single", args=["user7"]), HTTP_Authorization=auth)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()['archived'], False)
-        response = self.client.get('/archive/user7/', HTTP_Authorization="my_token")
+        response = self.client.get(reverse("agate:archive", args=["user7"]), HTTP_Authorization=auth)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response = self.client.get('/single/user7/', HTTP_Authorization="my_token")
+        response = self.client.get(reverse("agate:single", args=["user7"]), HTTP_Authorization=auth)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()['archived'], True)
         # Ensure the object is deleted from the database
@@ -73,10 +73,10 @@ class IngestionAttemptAPITests(APITestCase):
                                         project="project",
                                         site="here",
                                         is_test_attempt=False)
-        response = self.client.get('/single/user4/', HTTP_Authorization="my_token")
+        response = self.client.get(reverse("agate:single", args=["user4"]), HTTP_Authorization=auth)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()['archived'], False)
-        response = self.client.get('/delete/user4/', HTTP_Authorization="my_token")
+        response = self.client.get(reverse("agate:delete", args=["user4"]), HTTP_Authorization=auth)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response = self.client.get('/single/user4/', HTTP_Authorization="my_token")
+        response = self.client.get(reverse("agate:single", args=["user4"]), HTTP_Authorization=auth)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
