@@ -88,20 +88,19 @@ def profile(request):
 
 @api_view(["PUT"])
 def update_ingestion_attempt(request):
-    if request.method == 'PUT':
-        auth = request.headers.get("Authorization")
-        try:
-            instance = IngestionAttempt.objects.get(uuid=request.PUT['uuid'])
-            if (not check_authorized(auth, instance.site, instance.project)):
-                return HttpResponse('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
-            form = IngestionAttemptForm(request.PUT, instance=instance)
-        except IngestionAttempt.DoesNotExist:
-            # IngestionAttempt doesn't exists, so we create a new one
-            form = IngestionAttemptForm(request.PUT)
-        if form.is_valid():
-            if (not check_authorized(auth, form.instance.site, form.instance.project)):
-                return HttpResponse('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
-            ingestion = form.save()
-            return HttpResponse(ingestion.uuid, status=status.HTTP_201_CREATED)
-        else:
-            return HttpResponse(form.errors, status=status.HTTP_400_BAD_REQUEST)
+    auth = request.headers.get("Authorization")
+    try:
+        instance = IngestionAttempt.objects.get(uuid=request.PUT['uuid'])
+        if (not check_authorized(auth, instance.site, instance.project)):
+            return HttpResponse('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
+        form = IngestionAttemptForm(request.PUT, instance=instance)
+    except IngestionAttempt.DoesNotExist:
+        # IngestionAttempt doesn't exists, so we create a new one
+        form = IngestionAttemptForm(request.PUT)
+    if form.is_valid():
+        if (not check_authorized(auth, form.instance.site, form.instance.project)):
+            return HttpResponse('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
+        ingestion = form.save()
+        return HttpResponse(ingestion.uuid, status=status.HTTP_201_CREATED)
+    else:
+        return HttpResponse(form.errors, status=status.HTTP_400_BAD_REQUEST)
