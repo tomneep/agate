@@ -34,6 +34,9 @@ class IngestionAttemptAPITests(APITestCase):
             token_hash=hashlib.sha256(auth.encode("utf-8")).hexdigest(),
         )
 
+        # Setup dummy Http Auth
+        self.client.credentials(HTTP_AUTHORIZATION=auth)
+
     def test_unauthorized_access(self):
         # Test if the API correctly denies unauthorized access
         response = self.client.get(reverse("agate:ingestion"))
@@ -42,22 +45,17 @@ class IngestionAttemptAPITests(APITestCase):
     def test_get_ingestion_attempts(self):
         # Test if GET returns the list of ingestion attempts
         response = self.client.get(
-            reverse("agate:ingestion"),
-            data={"project": "project"},
-            HTTP_Authorization=auth,
+            reverse("agate:ingestion"), data={"project": "project"}
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(
-            len(response.data["results"]), 2
-        )  # Expecting 2 ingestion attempts
-        self.assertEqual(response.data["previous"], None)
-        self.assertEqual(response.data["next"], None)
+        # Expecting 2 ingestion attempts (see setUp)
+        self.assertEqual(len(response.data["results"]), 2)
+        self.assertIsNone(response.data["previous"])
+        self.assertIsNone(response.data["next"])
 
     def test_get_single_ingestion_attempt(self):
         # Test if GET returns the list of ingestion attempts
-        response = self.client.get(
-            reverse("agate:single", args=["user1"]), HTTP_Authorization=auth
-        )
+        response = self.client.get(reverse("agate:single", args=["user1"]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()["uuid"], "user1")
         self.assertEqual(response.json()["project"], "project")
@@ -71,24 +69,23 @@ class IngestionAttemptAPITests(APITestCase):
             site="here",
             is_test_attempt=False,
         )
-        response = self.client.get(
-            reverse("agate:single", args=["user7"]), HTTP_Authorization=auth
-        )
+
+        # Check the object exists and is not archived
+        response = self.client.get(reverse("agate:single", args=["user7"]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json()["archived"], False)
-        response = self.client.get(
-            reverse("agate:archive", args=["user7"]), HTTP_Authorization=auth
-        )
+        self.assertFalse(response.json()["archived"])
+
+        # Archive the project
+        response = self.client.get(reverse("agate:archive", args=["user7"]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response = self.client.get(
-            reverse("agate:single", args=["user7"]), HTTP_Authorization=auth
-        )
+
+        # Check the object exists and is archived
+        response = self.client.get(reverse("agate:single", args=["user7"]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json()["archived"], True)
-        # Ensure the object is deleted from the database
-        self.assertEqual(
-            IngestionAttempt.objects.filter(uuid="user7")[0].archived, True
-        )
+        self.assertTrue(response.json()["archived"])
+
+        # Ensure the object has been archived in the database
+        self.assertTrue(IngestionAttempt.objects.filter(uuid="user7")[0].archived)
 
     def test_delete_ingestion_attempt(self):
         IngestionAttempt.objects.create(
@@ -98,16 +95,15 @@ class IngestionAttemptAPITests(APITestCase):
             site="here",
             is_test_attempt=False,
         )
-        response = self.client.get(
-            reverse("agate:single", args=["user4"]), HTTP_Authorization=auth
-        )
+        # Check that we can retrieve the object and that it isn't archived
+        response = self.client.get(reverse("agate:single", args=["user4"]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json()["archived"], False)
-        response = self.client.get(
-            reverse("agate:delete", args=["user4"]), HTTP_Authorization=auth
-        )
+        self.assertFalse(response.json()["archived"])
+
+        # Now delete the object
+        response = self.client.get(reverse("agate:delete", args=["user4"]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response = self.client.get(
-            reverse("agate:single", args=["user4"]), HTTP_Authorization=auth
-        )
+
+        # Check that we can no longer find it (because it has been deleted)
+        response = self.client.get(reverse("agate:single", args=["user4"]))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
