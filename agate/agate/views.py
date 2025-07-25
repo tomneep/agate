@@ -1,4 +1,3 @@
-from django.core import serializers
 from django.http import JsonResponse, HttpResponse
 from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt
@@ -40,8 +39,8 @@ def single_ingestion_attempt_response(request, uuid=""):
     auth = request.headers.get("Authorization")
     if not check_authorized(auth, obj.site, obj.project):
         return HttpResponse('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
-    data = serializers.serialize('json', obj)
-    return JsonResponse(data, safe=False)
+    serializer = IngestionSerializer(obj)
+    return JsonResponse(serializer.data, safe=False)
 
 
 def archive_ingestion_attempt(request, uuid=""):
