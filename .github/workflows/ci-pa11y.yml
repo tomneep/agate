@@ -25,7 +25,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install -r requirements-test.txt
-    - name: Run Tests
+    - name: Run Pa11y-CI Tests
       run: |
         cd agate
         mv core/local_settings.test.py core/local_settings.py
