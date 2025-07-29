@@ -27,6 +27,7 @@ jobs:
         pip install -r requirements-test.txt
     - name: Run Pa11y-CI Tests
       env:
+        # Path to chrome on GitHub action runners
         PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome
       run: |
         cd agate
