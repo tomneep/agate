@@ -1,6 +1,6 @@
 from django.http import JsonResponse, HttpResponse
 from rest_framework import status
-from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view
 from .models import IngestionAttempt
 from .forms import IngestionAttemptForm
 import requests
@@ -85,22 +85,21 @@ def profile(request):
     return HttpResponse(r, status=r.status_code)
 
 
-@csrf_exempt
+@api_view(["PUT"])
 def update_ingestion_attempt(request):
-    if request.method == 'PUT':
-        auth = request.headers.get("Authorization")
-        try:
-            instance = IngestionAttempt.objects.get(uuid=request.PUT['uuid'])
-            if (not check_authorized(auth, instance.site, instance.project)):
-                return HttpResponse('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
-            form = IngestionAttemptForm(request.PUT, instance=instance)
-        except IngestionAttempt.DoesNotExist:
-            # IngestionAttempt doesn't exists, so we create a new one
-            form = IngestionAttemptForm(request.PUT)
-        if form.is_valid():
-            if (not check_authorized(auth, form.instance.site, form.instance.project)):
-                return HttpResponse('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
-            ingestion = form.save()
-            return HttpResponse(ingestion.uuid, status=status.HTTP_201_CREATED)
-        else:
-            return HttpResponse(form.errors, status=status.HTTP_400_BAD_REQUEST)
+    auth = request.headers.get("Authorization")
+    try:
+        instance = IngestionAttempt.objects.get(uuid=request.PUT['uuid'])
+        if (not check_authorized(auth, instance.site, instance.project)):
+            return HttpResponse('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
+        form = IngestionAttemptForm(request.PUT, instance=instance)
+    except IngestionAttempt.DoesNotExist:
+        # IngestionAttempt doesn't exists, so we create a new one
+        form = IngestionAttemptForm(request.PUT)
+    if form.is_valid():
+        if (not check_authorized(auth, form.instance.site, form.instance.project)):
+            return HttpResponse('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
+        ingestion = form.save()
+        return HttpResponse(ingestion.uuid, status=status.HTTP_201_CREATED)
+    else:
+        return HttpResponse(form.errors, status=status.HTTP_400_BAD_REQUEST)
