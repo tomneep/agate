@@ -55,7 +55,7 @@ def archive_ingestion_attempt(request, uuid=""):
     return HttpResponse(status=status.HTTP_200_OK)
 
 
-@api_view(["GET"])
+@api_view(["DELETE"])
 def delete_ingestion_attempt(request, uuid=""):
     obj = get_object_or_404(IngestionAttempt, uuid=uuid)
 
