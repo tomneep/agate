@@ -107,3 +107,31 @@ class IngestionAttemptAPITests(APITestCase):
         # Check that we can no longer find it (because it has been deleted)
         response = self.client.get(reverse("agate:single", args=["user4"]))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_update_ingestion_attempt_replace_success(self):
+        """Test getting an existing record and modifying some field of it."""
+        response = self.client.get(reverse("agate:single", args=["user1"]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Modify the data slightly and update it
+        data = response.json()
+        data["run_index"] = 1
+        response = self.client.put(reverse("agate:update"), data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_update_ingestion_attempt_new_success(self):
+        """Test putting a new record (by copying an existing field and changing the UUID."""
+        response = self.client.get(reverse("agate:single", args=["user1"]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Use exactly the same data but change the uuid so we are creating a new
+        # record
+        data = response.json()
+        data["uuid"] = "user9"
+        response = self.client.put(reverse("agate:update"), data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_update_ingestion_attempt_bad_data(self):
+        """Test that putting bad data returns status code 400."""
+        response = self.client.put(reverse("agate:update"), {"bad": "data"})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
