@@ -5,11 +5,15 @@ from datetime import timedelta
 from django.utils import timezone
 import json
 import hashlib
+from rest_framework.exceptions import PermissionDenied
 
 
 def check_project_authorized(auth, project):
     """
-    Boolean telling if a provided authorization token is valid to view a project
+    Check if the user is allowed to view this project.
+
+    Returns True if a provided authorization token is valid to view a project,
+    otherwise raises a `PermissionDenied` exception.
 
     The onyx API is queried to determine which projects the token is permitted to see.
     If the onyx response is not a 200, the token is invalid.
@@ -19,7 +23,7 @@ def check_project_authorized(auth, project):
     for a in json.loads(projects)["data"]:
         if a["project"] == project:
             return True
-    return False
+    raise PermissionDenied("Not authorised to view this project")
 
 
 def find_site(auth):
@@ -39,7 +43,9 @@ def check_authorized(auth, site, project):
     + Originates from the site
     + Is authorized to view the project
     """
-    return (find_site(auth) == site) and (check_project_authorized(auth, project))
+    if find_site(auth) != site:
+        raise PermissionDenied("Not authorised to view this site")
+    return check_project_authorized(auth, project)
 
 
 def _get_item(auth):

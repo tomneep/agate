@@ -28,6 +28,22 @@ class IngestionAttemptAPITests(APITestCase):
             is_test_attempt=False,
         )
 
+        IngestionAttempt.objects.create(
+            uuid="forbidden_entry",
+            is_published=True,
+            project="forbidden_project",
+            site="here",
+            is_test_attempt=False,
+        )
+
+        IngestionAttempt.objects.create(
+            uuid="forbidden_site",
+            is_published=True,
+            project="project",
+            site="forbidden_site",
+            is_test_attempt=False,
+        )
+
         TokenCache.objects.create(
             projects_output='{"data": [{"project":"project"}]}',
             site_output="here",
@@ -135,3 +151,12 @@ class IngestionAttemptAPITests(APITestCase):
         """Test that putting bad data returns status code 400."""
         response = self.client.put(reverse("agate:update"), {"bad": "data"})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_get_single_ingestion_attempt_forbidden(self):
+        response = self.client.get(reverse("agate:single", args=["forbidden_entry"]))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_get_single_ingestion_attempt_forbidden_site(self):
+        response = self.client.get(reverse("agate:single", args=["forbidden_site"]))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
