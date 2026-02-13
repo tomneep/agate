@@ -159,4 +159,3 @@ class IngestionAttemptAPITests(APITestCase):
     def test_get_single_ingestion_attempt_forbidden_site(self):
         response = self.client.get(reverse("agate:single", args=["forbidden_site"]))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
