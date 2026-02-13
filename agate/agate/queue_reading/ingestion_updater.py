@@ -1,6 +1,6 @@
 import logging
 from agate.models import IngestionAttempt
-from agate.forms import IngestionAttemptForm
+from agate.serializers import IngestionSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -46,14 +46,14 @@ class IngestionUpdater:
         """
         try:
             instance = IngestionAttempt.objects.get(uuid=uuid)
-            form = IngestionAttemptForm(data, instance=instance)
         except IngestionAttempt.DoesNotExist:
+            instance = None
             # IngestionAttempt doesn't exists, so we create a new one
-            form = IngestionAttemptForm(data)
-        if form.is_valid():
-            form.save()
+        serializer = IngestionSerializer(data=data, instance=instance)
+        if serializer.is_valid():
+            serializer.save()
         else:
-            logger.critical(f"invalid ingestion attempt message: {form.errors}")
+            logger.critical(f"invalid ingestion attempt message: {serializer.errors}")
 
     @classmethod
     def _status(cls, data: dict, stage: str):
