@@ -88,16 +88,14 @@ def update_ingestion_attempt(request):
     success_status = status.HTTP_200_OK
     try:
         instance = IngestionAttempt.objects.get(uuid=request.data.get('uuid'))
-        if not check_authorized(auth, instance.site, instance.project):
-            return HttpResponse('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
+        check_authorized(auth, instance.site, instance.project)
         form = IngestionAttemptForm(request.data, instance=instance)
     except IngestionAttempt.DoesNotExist:
         # IngestionAttempt doesn't exists, so we create a new one
         form = IngestionAttemptForm(request.data)
         success_status = status.HTTP_201_CREATED
     if form.is_valid():
-        if not check_authorized(auth, form.instance.site, form.instance.project):
-            return HttpResponse('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
+        check_authorized(auth, form.instance.site, form.instance.project)
         ingestion = form.save()
         return Response({"uuid": ingestion.uuid}, status=success_status)
     else:
