@@ -12,6 +12,9 @@ def check_project_authorized(auth, project):
     """
     Check if the user is allowed to view this project.
 
+    Raises a `PermissionDenied` exception if not authorised to view
+    project, otherwise returns None.
+
     Returns True if a provided authorization token is valid to view a project,
     otherwise raises a `PermissionDenied` exception.
 
@@ -22,8 +25,9 @@ def check_project_authorized(auth, project):
     projects = _get_item(auth).projects_output
     for a in json.loads(projects)["data"]:
         if a["project"] == project:
-            return True
-    raise PermissionDenied("Not authorised to view this project")
+            break
+    else:
+        raise PermissionDenied("Not authorised to view this project")
 
 
 def find_site(auth):

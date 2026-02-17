@@ -27,8 +27,7 @@ class IngestionAPIView(ListAPIView):
     def list(self, request, *args, **kwargs):
         auth = request.headers.get("Authorization")
         project_name = request.query_params.get("project", None)
-        if (project_name is None) or (not check_project_authorized(auth, project_name)):
-            return HttpResponse('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
+        check_project_authorized(auth, project_name)
         return super().list(request, *args, **kwargs)
 
 

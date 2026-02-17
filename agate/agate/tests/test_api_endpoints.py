@@ -56,7 +56,7 @@ class IngestionAttemptAPITests(APITestCase):
     def test_unauthorized_access(self):
         # Test if the API correctly denies unauthorized access
         response = self.client.get(reverse("agate:ingestion"))
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_get_ingestion_attempts(self):
         # Test if GET returns the list of ingestion attempts
