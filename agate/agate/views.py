@@ -26,8 +26,7 @@ class IngestionAPIView(ListAPIView):
     def list(self, request, *args, **kwargs):
         auth = request.headers.get("Authorization")
         project_name = request.query_params.get("project", None)
-        if (project_name is None) or (not check_project_authorized(auth, project_name)):
-            return HttpResponse('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
+        check_project_authorized(auth, project_name)
         return super().list(request, *args, **kwargs)
 
 
@@ -36,8 +35,7 @@ def single_ingestion_attempt_response(request, uuid=""):
     obj = get_object_or_404(IngestionAttempt, uuid=uuid)
 
     auth = request.headers.get("Authorization")
-    if not check_authorized(auth, obj.site, obj.project):
-        return HttpResponse('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
+    check_authorized(auth, obj.site, obj.project)
     serializer = IngestionSerializer(obj)
     return JsonResponse(serializer.data, safe=False)
 
@@ -47,8 +45,7 @@ def archive_ingestion_attempt(request, uuid=""):
     obj = get_object_or_404(IngestionAttempt, uuid=uuid)
 
     auth = request.headers.get("Authorization")
-    if not check_authorized(auth, obj.site, obj.project):
-        return HttpResponse('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
+    check_authorized(auth, obj.site, obj.project)
     obj.archived = True
     obj.save()
     return HttpResponse(status=status.HTTP_200_OK)
@@ -59,8 +56,7 @@ def delete_ingestion_attempt(request, uuid=""):
     obj = get_object_or_404(IngestionAttempt, uuid=uuid)
 
     auth = request.headers.get("Authorization")
-    if not check_authorized(auth, obj.site, obj.project):
-        return HttpResponse('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
+    check_authorized(auth, obj.site, obj.project)
     obj.delete()
     return HttpResponse(status=status.HTTP_200_OK)
 
