@@ -5,4 +5,5 @@ from .models import IngestionAttempt
 class IngestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = IngestionAttempt
-        exclude = ''
+        fields = "__all__"
+        read_only_fields = ["created_at", "updated_at"]

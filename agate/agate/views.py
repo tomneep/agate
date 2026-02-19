@@ -4,7 +4,6 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import IngestionAttempt
-from .forms import IngestionAttemptForm
 import requests
 from .authorisation import check_project_authorized, find_site, check_authorized
 from core.settings import ONYX_DOMAIN
@@ -80,22 +79,23 @@ def profile(request):
 def update_ingestion_attempt(request):
     """Creates or replaces the target resource."""
     auth = request.headers.get("Authorization")
+    try:
+        instance = IngestionAttempt.objects.get(uuid=request.data.get('uuid'))
+    except IngestionAttempt.DoesNotExist:
+        instance = None
+
     # If we are updating an existing record, then we should return
     # status 200 (or possibly 204?), but if we are creating a new
     # record then we should return 201. See:
     # https://www.rfc-editor.org/rfc/rfc7231#section-4.3.4
-    success_status = status.HTTP_200_OK
-    try:
-        instance = IngestionAttempt.objects.get(uuid=request.data.get('uuid'))
+    if instance:
         check_authorized(auth, instance.site, instance.project)
-        form = IngestionAttemptForm(request.data, instance=instance)
-    except IngestionAttempt.DoesNotExist:
-        # IngestionAttempt doesn't exists, so we create a new one
-        form = IngestionAttemptForm(request.data)
-        success_status = status.HTTP_201_CREATED
-    if form.is_valid():
-        check_authorized(auth, form.instance.site, form.instance.project)
-        ingestion = form.save()
-        return Response({"uuid": ingestion.uuid}, status=success_status)
+        success_status = status.HTTP_200_OK
     else:
-        return HttpResponse(form.errors, status=status.HTTP_400_BAD_REQUEST)
+        success_status = status.HTTP_201_CREATED
+
+    serializer = IngestionSerializer(instance=instance, data=request.data)
+    serializer.is_valid(raise_exception=True)
+    check_authorized(auth, serializer.validated_data["site"], serializer.validated_data["project"])
+    ingestion = serializer.save()
+    return Response({"uuid": ingestion.uuid}, status=success_status)
