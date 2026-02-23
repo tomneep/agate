@@ -6,7 +6,7 @@ from django.test import TestCase
 from django.utils import timezone
 from rest_framework.exceptions import PermissionDenied
 
-from agate.authorisation import check_project_authorized, find_site
+from agate.authorisation import check_authorized, check_project_authorized, find_site
 from core.local_settings import ONYX_DOMAIN
 
 
@@ -40,6 +40,12 @@ class AuthTestCase(TestCase):
             self.assertEqual(mocked.call_count, 2)
 
             check_project_authorized(auth, "test_project")
+            # `requests.get` should still have only been called twice,
+            # since there is a token cache that stores the results
+            self.assertEqual(mocked.call_count, 2)
+
+            # Check both project and site together
+            check_authorized(auth, "test_site", "test_project")
             # `requests.get` should still have only been called twice,
             # since there is a token cache that stores the results
             self.assertEqual(mocked.call_count, 2)
