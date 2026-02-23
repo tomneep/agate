@@ -51,14 +51,14 @@ def archive_ingestion_attempt(request, uuid=""):
     return HttpResponse(status=status.HTTP_200_OK)
 
 
-@api_view(["GET"])
+@api_view(["DELETE"])
 def delete_ingestion_attempt(request, uuid=""):
     obj = get_object_or_404(IngestionAttempt, uuid=uuid)
 
     auth = request.headers.get("Authorization")
     check_authorized(auth, obj.site, obj.project)
     obj.delete()
-    return HttpResponse(status=status.HTTP_200_OK)
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 def projects(request):

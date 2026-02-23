@@ -117,8 +117,8 @@ class IngestionAttemptAPITests(APITestCase):
         self.assertFalse(response.json()["archived"])
 
         # Now delete the object
-        response = self.client.get(reverse("agate:delete", args=["user4"]))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.delete(reverse("agate:delete", args=["user4"]))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
         # Check that we can no longer find it (because it has been deleted)
         response = self.client.get(reverse("agate:single", args=["user4"]))
