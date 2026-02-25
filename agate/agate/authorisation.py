@@ -1,6 +1,6 @@
 import requests
 from .caching import TokenCache
-from core.settings import ONYX_DOMAIN
+from django.conf import settings
 from datetime import timedelta
 from django.utils import timezone
 import json
@@ -69,7 +69,7 @@ def _get_item(auth):
 
 def _populate_entry(auth):
 
-    route = f"{ONYX_DOMAIN}/projects"
+    route = f"{settings.ONYX_DOMAIN}/projects"
     headers = {"Authorization": auth}
     r = requests.get(route, headers=headers)
     if (not r.status_code == 200):
@@ -77,7 +77,7 @@ def _populate_entry(auth):
     else:
         projects = r.text
 
-    route = f"{ONYX_DOMAIN}/accounts/profile"
+    route = f"{settings.ONYX_DOMAIN}/accounts/profile"
     headers = {"Authorization": auth}
     r = requests.get(route, headers=headers)
     if (not r.status_code == 200):
