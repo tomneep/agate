@@ -5,9 +5,7 @@ import sys
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'core/templates')
 
-
 # Application definition
-
 INSTALLED_APPS = [
     # Django default apps
     'django.contrib.admin',
@@ -110,18 +108,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# Import local_settings.py
-SECRET_KEY = None
-try:
-    from .local_settings import *  # NOQA
-except ImportError:
-    sys.exit('Unable to import local_settings.py (refer to local_settings.example.py for help)')
-
-# Ensure the SECRET_KEY is supplied in local_settings.py - and trust that the other settings are there too.
-if not SECRET_KEY:  # NOQA
-    sys.exit('Missing SECRET_KEY in local_settings.py')
-
-
 # Storages
 
 # Default STORAGES from Django documentation
@@ -131,13 +117,7 @@ STORAGES = {
     "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
 }
 
-# Use ManifestStaticFilesStorage when not in debug mode
-if not DEBUG:  # NOQA
-    STORAGES['staticfiles'] = {"BACKEND": "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"}
-
-
 # Logging
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -160,9 +140,16 @@ LOGGING = {
         },
     },
     'handlers': {
-        'stream': {
+        'stream_debug': {
             'class': 'logging.StreamHandler',
-            'level': 'DEBUG' if DEBUG else 'INFO',  # NOQA
+            'filters': ['require_debug_true'],
+            'level': 'DEBUG',  # NOQA
+            'formatter': 'verbose',
+        },
+        'stream_prod': {
+            'class': 'logging.StreamHandler',
+            'filters': ['require_debug_false'],
+            'level': os.getenv("DJANGO_LOG_LEVEL", "INFO"),  # NOQA
             'formatter': 'verbose',
         },
         'file': {
@@ -181,8 +168,8 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['stream', 'file', 'mail_admins'],
-            'level': 'DEBUG' if DEBUG else 'INFO',  # NOQA
+            'handlers': ['stream_debug', 'stream_prod', 'file', 'mail_admins'],
+            'level': 'DEBUG',  # NOQA
             'propagate': 'True',
         },
     },

@@ -7,8 +7,7 @@ REMEMBER: If modfiying the content of this file, reflect the changes in local_se
 
 import os
 from empty_message_retrieval import EmptyMessageRetrieval
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+from .base_settings import *
 
 SECRET_KEY = 'u6n(9&8g-3=6d1#jyp^#))you-h&y^-5y7*&hu)cpxzeu_7#j+'
 
@@ -16,7 +15,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-ADMIN_EMAIL = 'bear-rsg@contacts.bham.ac.uk'
+# ADMIN_EMAIL = 'bear-rsg@contacts.bham.ac.uk'
 
 DATABASES = {
     'default': {
@@ -33,3 +32,7 @@ ONYX_DOMAIN = ''
 MESSAGE_RETRIEVAL = EmptyMessageRetrieval()
 
 LIMITED_PROJECT_LIST = ["synthscape"]
+
+# Use ManifestStaticFilesStorage when not in debug mode
+if not DEBUG:  # NOQA
+    STORAGES['staticfiles'] = {"BACKEND": "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"}
