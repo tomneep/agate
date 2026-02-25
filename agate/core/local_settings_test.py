@@ -7,7 +7,9 @@ REMEMBER: If modfiying the content of this file, reflect the changes in local_se
 
 import os
 from empty_message_retrieval import EmptyMessageRetrieval
-from .base_settings import *
+
+from .base_settings import *  # noqa: F403
+from .base_settings import BASE_DIR, STORAGES
 
 SECRET_KEY = 'u6n(9&8g-3=6d1#jyp^#))you-h&y^-5y7*&hu)cpxzeu_7#j+'
 

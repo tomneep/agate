@@ -25,5 +25,5 @@ jobs:
     - name: Run Tests
       run: |
         cd agate
-        coverage run manage.py test --settings=local_settings.test.py
+        coverage run manage.py test --settings="core.local_settings_test"
         coverage report
