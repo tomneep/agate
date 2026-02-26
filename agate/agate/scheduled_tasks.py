@@ -6,11 +6,11 @@ from datetime import timedelta
 from django.utils import timezone
 from .caching import TokenCache
 from .models import IngestionAttempt
-from core.settings import MESSAGE_RETRIEVAL
+from django.conf import settings
 
 _scheduler = BackgroundScheduler()
 
-_queue_reader = QueueReader(MESSAGE_RETRIEVAL)
+_queue_reader = QueueReader(settings.MESSAGE_RETRIEVAL)
 
 
 def queue_retrieve_task():

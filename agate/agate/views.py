@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from .models import IngestionAttempt
 import requests
 from .authorisation import check_project_authorized, find_site, check_authorized
-from core.settings import ONYX_DOMAIN
+from django.conf import settings
 
 from .serializers import IngestionSerializer
 from .pagination import MyCursorPagination
@@ -62,14 +62,14 @@ def delete_ingestion_attempt(request, uuid=""):
 
 
 def projects(request):
-    route = f"{ONYX_DOMAIN}/projects"
+    route = f"{settings.ONYX_DOMAIN}/projects"
     headers = {"Authorization": request.headers.get("Authorization")}
     r = requests.get(route, headers=headers)
     return HttpResponse(r, status=r.status_code)
 
 
 def profile(request):
-    route = f"{ONYX_DOMAIN}/accounts/profile"
+    route = f"{settings.ONYX_DOMAIN}/accounts/profile"
     headers = {"Authorization": request.headers.get("Authorization")}
     r = requests.get(route, headers=headers)
     return HttpResponse(r, status=r.status_code)

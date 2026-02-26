@@ -7,7 +7,7 @@ from django.utils import timezone
 from rest_framework.exceptions import PermissionDenied
 
 from agate.authorisation import check_authorized, check_project_authorized, find_site
-from core.local_settings import ONYX_DOMAIN
+from django.conf import settings
 
 
 class AuthTestCase(TestCase):
@@ -15,13 +15,13 @@ class AuthTestCase(TestCase):
     @staticmethod
     def mock_onyx_request(url, *args, **kwargs):
 
-        if url == f"{ONYX_DOMAIN}/projects":
+        if url == f"{settings.ONYX_DOMAIN}/projects":
             response = Mock()
             response.status_code = 200
             response.text = json.dumps({"data": [{"project": "test_project"}]})
             return response
 
-        if url == f"{ONYX_DOMAIN}/accounts/profile":
+        if url == f"{settings.ONYX_DOMAIN}/accounts/profile":
             response = Mock()
             response.status_code = 200
             response.json.return_value = {"data": {"site": "test_site"}}
