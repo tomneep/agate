@@ -37,3 +37,7 @@ dist/
 
 coverage_html_report/
 *log
+
+# The varys_config.cfg needs to be given when setting up the container
+e.g. with a volume mount or some other technique
+varys_config.cfg
