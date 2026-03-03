@@ -1,5 +1,5 @@
 import os
-from empty_message_retrieval import EmptyMessageRetrieval
+from varys_message_retrieval import VarysMessageRetrieval
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
