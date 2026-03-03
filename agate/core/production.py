@@ -184,19 +184,31 @@ SECRET_KEY = os.environ["SECRET_KEY"]
 
 ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"].split(",")
 
+# Set the database name below
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'django-template.sqlite3'),
-        'TEST': {
-            'NAME': os.path.join(BASE_DIR, 'django-template_TEST.sqlite3'),
-        },
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ["DATABASE_NAME"],
+        "USER": os.environ["DATABASE_USER"],
+        "PASSWORD": os.environ["DATABASE_PASSWORD"],
+        "HOST": os.environ["DATABASE_HOST"],
     }
 }
 
+CORS_ALLOWED_ORIGINS = os.environ.get("CORS_ALLOWED_ORIGINS", "").split(",")
+CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")
+
 ONYX_DOMAIN = os.environ["ONYX_DOMAIN"]
 
-MESSAGE_RETRIEVAL = EmptyMessageRetrieval()
+MESSAGE_RETRIEVAL = VarysMessageRetrieval(
+    queue_suffix="agate",
+    timeout=1,
+    config_path=os.path.join(BASE_DIR, "varys_config.cfg"),
+    profile="test",
+    logfile="varys.log",
+    log_level="DEBUG",
+    auto_acknowledge=False
+)
 
 LIMITED_PROJECT_LIST = os.environ.get(
     "LIMITED_PROJECT_LIST", "synthscape",
