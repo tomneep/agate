@@ -58,3 +58,48 @@ spec:
               mountPath: /app/varys_config.cfg
               subPath: varys_config.cfg
               readOnly: true
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-scheduler
+  labels:
+    app: django-scheduler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: django-scheduler
+  template:
+    metadata:
+      labels:
+        app: django-scheduler
+    spec:
+      volumes:
+        - name: message-config
+          secret:
+            secretName: message-config-secret
+      containers:
+        - name: scheduler
+          image: localhost/agate:latest
+          imagePullPolicy: Never
+
+          # This runs the scheduler, not the web server
+          command: ["python", "manage.py", "runscheduler"]
+
+          envFrom:
+            - configMapRef:
+                name: postgres-config
+            - secretRef:
+                name: postgres-secret
+            - configMapRef:
+                name: django-config
+            - secretRef:
+                name: django-secret
+
+          volumeMounts:
+            - name: message-config
+              mountPath: /app/varys_config.cfg
+              subPath: varys_config.cfg
+              readOnly: true
+
