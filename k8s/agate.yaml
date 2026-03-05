@@ -38,6 +38,24 @@ spec:
         - name: message-config
           secret:
             secretName: message-config-secret
+      # By running an init container, we ensure that django doesn't
+      # try to perform migrations on a non-existing database
+      initContainers:
+        - name: wait-for-postgres
+          image: postgres:13-alpine
+          command:
+            [
+            "sh",
+            "-c",
+            "echo 'Waiting for Postgres...' && \
+            until pg_isready -h $POSTGRES_HOST -p $POSTGRES_PORT -U $POSTGRES_USER; do \
+            echo 'Postgres unavailable - sleeping'; \
+            sleep 1; \
+            done"
+            ]
+          envFrom:
+            - configMapRef:
+                name: postgres-config
       containers:
         - name: web
           image: localhost/agate:latest
@@ -102,4 +120,3 @@ spec:
               mountPath: /app/varys_config.cfg
               subPath: varys_config.cfg
               readOnly: true
-
