@@ -110,7 +110,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-DEBUG = os.environ.get("DEBUG", False)
+DEBUG = os.getenv("DEBUG", False)
 
 
 # Storages
@@ -195,8 +195,8 @@ DATABASES = {
     }
 }
 
-CORS_ALLOWED_ORIGINS = os.environ.get("CORS_ALLOWED_ORIGINS", "").split(",")
-CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")
+CORS_ALLOWED_ORIGINS = [i for i in os.getenv("CORS_ALLOWED_ORIGINS", "").split(",") if i]
+CSRF_TRUSTED_ORIGINS = [i for i in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",") if i]
 
 ONYX_DOMAIN = os.environ["ONYX_DOMAIN"]
 
@@ -210,6 +210,4 @@ MESSAGE_RETRIEVAL = VarysMessageRetrieval(
     auto_acknowledge=False
 )
 
-LIMITED_PROJECT_LIST = os.environ.get(
-    "LIMITED_PROJECT_LIST", "synthscape",
-).split(",")
+LIMITED_PROJECT_LIST = os.getenv("LIMITED_PROJECT_LIST", "synthscape").split(",")
