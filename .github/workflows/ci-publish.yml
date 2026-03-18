@@ -38,7 +38,7 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ghcr.io/${{ github.repository }}:${{ steps.vars.outputs.TAG }}
-            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ github.repository.toLowerCase() }}:${{ steps.vars.outputs.TAG }}
+            ghcr.io/${{ github.repository.toLowerCase() }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
