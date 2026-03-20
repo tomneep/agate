@@ -27,21 +27,23 @@ def clear_old_tokens_task():
     TokenCache.objects.filter(created_at__lte=timezone.now()-timedelta(hours=2)).delete()
 
 
-def clear_old_archived_ingest_attempts_task():
+def clear_old_ingest_attempts_task():
     """
-    Task which will delete IngestionAttempt objects either if
-    + they have been archived and unmodified for a day
-    + they have been unmodified for 28 days
+    Task which will delete IngestionAttempt objects if they have
+    been unmodified for 28 days
     """
     logging.debug("ingestion clear task")
-    IngestionAttempt.objects.filter(archived=True,  updated_at__lte=timezone.now()-timedelta(days=1)).delete()
-    IngestionAttempt.objects.filter(updated_at__lte=timezone.now()-timedelta(days=28)).delete()
+    # should really be twenty_eight_days_ago but the chance was too good to pass up
+    twenty_eight_days_later = timezone.now() - timedelta(days=28)
+    # TODO: Decide what to do about archived records (maybe just remove feature)
+    # IngestionAttempt.objects.filter(archived=True,  updated_at__lte=timezone.now()-timedelta(days=1)).delete()
+    IngestionAttempt.objects.filter(updated_at__lte=twenty_eight_days_later).delete()
 
 
 def start_scheduler():
     """Start our background scheduler."""
     _scheduler.add_job(queue_retrieve_task, 'interval', seconds=20)
     _scheduler.add_job(clear_old_tokens_task, 'interval', hours=23)
-    # _scheduler.add_job(clear_old_archived_ingest_attempts_task, 'interval', hours=23)
+    _scheduler.add_job(clear_old_ingest_attempts_task, 'interval', hours=23)
     _scheduler.start()
     logging.info("Started background scheduler")
