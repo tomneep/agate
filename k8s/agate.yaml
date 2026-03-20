@@ -58,9 +58,7 @@ spec:
                 name: postgres-config
       containers:
         - name: web
-          image: localhost/agate:latest
-          imagePullPolicy: Never
-
+          image: ghcr.io/climb-tre/agate:v0.0.6
           envFrom:
             - configMapRef:
                 name: postgres-config
@@ -99,9 +97,7 @@ spec:
             secretName: message-config-secret
       containers:
         - name: scheduler
-          image: localhost/agate:latest
-          imagePullPolicy: Never
-
+          image: ghcr.io/climb-tre/agate:v0.0.6
           # This runs the scheduler, not the web server
           command: ["python", "manage.py", "runscheduler"]
 
