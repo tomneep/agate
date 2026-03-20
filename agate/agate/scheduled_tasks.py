@@ -33,6 +33,7 @@ def clear_old_ingest_attempts_task():
     been unmodified for 28 days
     """
     logging.debug("ingestion clear task")
+    # should really be twenty_eight_days_ago but the chance was too good to pass up
     twenty_eight_days_later = timezone.now() - timedelta(days=28)
     # TODO: Decide what to do about archived records (maybe just remove feature)
     # IngestionAttempt.objects.filter(archived=True,  updated_at__lte=timezone.now()-timedelta(days=1)).delete()
