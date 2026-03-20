@@ -38,6 +38,9 @@ spec:
         - name: message-config
           secret:
             secretName: message-config-secret
+        - name: message-certs
+          secret:
+            secretName: message-config-certs
       # By running an init container, we ensure that django doesn't
       # try to perform migrations on a non-existing database
       initContainers:
@@ -74,6 +77,9 @@ spec:
               mountPath: /app/varys_config.cfg
               subPath: varys_config.cfg
               readOnly: true
+            - name: message-certs
+              mountPath: /app/certs/
+              readOnly: true
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -95,6 +101,9 @@ spec:
         - name: message-config
           secret:
             secretName: message-config-secret
+        - name: message-certs
+          secret:
+            secretName: message-config-certs
       containers:
         - name: scheduler
           image: ghcr.io/climb-tre/agate:v0.0.6
@@ -115,4 +124,7 @@ spec:
             - name: message-config
               mountPath: /app/varys_config.cfg
               subPath: varys_config.cfg
+              readOnly: true
+            - name: message-certs
+              mountPath: /app/certs/
               readOnly: true
