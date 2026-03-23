@@ -1,19 +1,13 @@
 apiVersion: v1
-kind: ConfigMap
+kind: Namespace
 metadata:
-  name: django-config
-data:
-  DEBUG: "False"
-  ALLOWED_HOSTS: "127.0.0.1"
-  CORS_ALLOWED_ORIGINS: "http://127.0.0.1:5173,http://localhost:5173"
-  CSRF_TRUSTED_ORIGINS: "http://127.0.0.1:5173,http://localhost:5173"
-  ONYX_DOMAIN: "http://host.containers.internal:8002"
-  LIMITED_PROJECT_LIST: "mscape,synthscape"
+  name: agate
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: django-service
+  namespace: agate
 spec:
   selector:
     app: django-app
@@ -24,6 +18,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: django-app
+  namespace: agate
 spec:
   replicas: 1
   selector:
@@ -85,6 +80,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: django-scheduler
+  namespace: agate
   labels:
     app: django-scheduler
 spec:
